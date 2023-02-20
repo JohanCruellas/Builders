@@ -4,36 +4,39 @@
       <q-card-section>
         <q-form class="q-gutter-md q-pa-md">
           <q-scroll-area style="height: 400px; width:500px; max-width: 800px;">
-          <div v-for="(question, questionIndex) in questions" :key="questionIndex">
-            <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
-              :dense="true">
-              <template v-slot:append>
-                <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
-                <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
-              </template>
-            </q-input>
-            <div v-for="(answer, answerIndex) in question.options" :key="answerIndex">
-              <q-input class="cardInput" lazy-rules :placeholder="'Answer ' + (answerIndex + 1)" v-model="answer.text"
+            <div v-for="(question, questionIndex) in questions" :key="questionIndex">
+              <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
                 :dense="true">
-                <template v-slot:before>
-                  <q-btn round dense flat icon="circle" size="5px" />
-                </template>
                 <template v-slot:append>
-                  <q-input></q-input>
-                  <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
+                  <q-icon :name="question.isShown ? 'keyboard_arrow_down' : 'keyboard_arrow_left'" @click="toggleDropdown(question)" class="cursor-pointer" />
+                  <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
+                  <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
                 </template>
               </q-input>
+              <div v-if="question.isShown">
+                <div v-for="(answer, answerIndex) in question.options" :key="answerIndex">
+                  <q-input class="cardInput" lazy-rules :placeholder="'Answer ' + (answerIndex + 1)" v-model="answer.text"
+                    :dense="true">
+                    <template v-slot:before>
+                      <q-btn round dense flat icon="circle" size="5px" />
+                    </template>
+                    <template v-slot:append>
+                      <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"></q-input>
+                      <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
+                    </template>
+                  </q-input>
+                </div>
+              <div class="answerAddBtnWrapper">
+                <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
+                  @click="addAnswer(questionIndex)" />
+              </div>
             </div>
-            <div class="answerAddBtnWrapper">
-              <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
-                @click="addAnswer(questionIndex)" />
             </div>
-          </div>
           </q-scroll-area>
           <q-card-actions align="center">
             <q-btn push class="cardActionBtn" color="primary" label="Add Question" @click="addQuestion" />
             <!-- <q-btn push color="primary" label="ConsoleLog" @click="consoleLog" /> -->
-            <q-btn push class="cardActionBtn" color="primary" label="Save" @click="toJSON"/>
+            <q-btn push class="cardActionBtn" color="primary" label="Save" @click="toJSON" />
           </q-card-actions>
         </q-form>
       </q-card-section>
@@ -51,13 +54,14 @@
     </q-card>
   </div>
 
-  <q-dialog v-model="confirm" persistent>
+  <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
         <!-- Add question text if exist -->
-        <div class="text-h6">Editing question {{ this.questionDialogContentIndex + 1 }}</div>
+        <div class="text-h6" v-if="!(this.questions[this.questionDialogContentIndex].text)">Editing question {{
+          this.questionDialogContentIndex + 1 }}</div>
+        <div class="text-h6" v-else>Editing question : "{{ this.questions[this.questionDialogContentIndex].text }}"</div>
       </q-card-section>
-
       <q-card-section id="questionDialogBox" class="q-pt-none">
         <q-item-label header>Tooltip</q-item-label>
         <q-item dense>
@@ -75,8 +79,19 @@
             <q-slider color="teal" v-model="questionSlider" label label-always :step="1" />
           </q-item-section>
         </q-item>
+        <q-item-label header>Other</q-item-label>
+        <q-item tag="label" v-ripple>
+          <q-item-section avatar>
+            <q-icon name="notes" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Open ended</q-item-label>
+          </q-item-section>
+          <q-item-section avatar>
+            <q-checkbox v-model="questionOpenEnded" color="teal" />
+          </q-item-section>
+        </q-item>
       </q-card-section>
-
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Ok" v-close-popup />
       </q-card-actions>
@@ -94,7 +109,7 @@ export default defineComponent({
   data() {
     return {
       questions: [],
-      confirm: false,
+      isQuestionDialogOpen: false,
       questionDialogContentIndex: [],
       ratioSlider: 1,
       JSONData: ""
@@ -116,6 +131,14 @@ export default defineComponent({
       set(newvalue) {
         this.questions[this.questionDialogContentIndex].info = newvalue
       }
+    },
+    questionOpenEnded: {
+      get() {
+        return this.questions[this.questionDialogContentIndex].hasOpenEnd
+      },
+      set(newvalue) {
+        this.questions[this.questionDialogContentIndex].hasOpenEnd = newvalue
+      }
     }
   },
   methods: {
@@ -125,8 +148,25 @@ export default defineComponent({
     addQuestion() {
       this.questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
     },
+    setDefaultRatio(answer, index, nbAnswers) {
+      let defaultRatio = Math.round(100 / (nbAnswers - 1))
+      switch (index) {
+        case 0:
+        answer.ratio = 0;
+          break;
+        case nbAnswers - 1:
+        answer.ratio = 100;
+          break;
+        default:
+        answer.ratio = defaultRatio * index
+      }
+    },
     addAnswer(questionIndex) {
       this.questions[questionIndex].options.push(new Answer(/*`Answer ${this.questions[questionIndex].options.length + 1}`*/))
+      let nbAnswers = this.questions[questionIndex].options.length;
+      this.questions[questionIndex].options.forEach((answer, i) => {
+        this.setDefaultRatio(answer, i, nbAnswers)
+      })
     },
     removeQuestion(questionIndex) {
       this.questions.splice(questionIndex, 1);
@@ -134,10 +174,17 @@ export default defineComponent({
     removeAnswer(questionIndex, answerIndex) {
       console.log(questionIndex)
       this.questions[questionIndex].options.splice(answerIndex, 1);
+      let nbAnswers = this.questions[questionIndex].options.length;
+      this.questions[questionIndex].options.forEach((answer, i) => {
+        this.setDefaultRatio(answer, i, nbAnswers)
+      })
     },
     showQuestionConfigPanel(questionIndex) {
       this.questionDialogContentIndex = questionIndex;
-      this.confirm = true;
+      this.isQuestionDialogOpen = true;
+    },
+    toggleDropdown(question) {
+      question.isShown = !(question.isShown)
     },
     toJSON() {
       this.JSONData = JSON.stringify(this.questions, null, 2)
@@ -173,5 +220,9 @@ export default defineComponent({
 .cardInput {
   width: 25vw;
   // max-width: fit-content;
+}
+
+.answerRatioInput {
+  width: 65px;
 }
 </style>
