@@ -1,15 +1,15 @@
 <template>
   <q-page class="flex flex-center">
-    <QuestionBuilder></QuestionBuilder>
+    <SourceDataBuilder></SourceDataBuilder>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import QuestionBuilder from '../components/QuestionBuilder.vue';
+import { defineComponent } from "vue";
+import SourceDataBuilder from "../components/SourceDataBuilder.vue";
 
 export default defineComponent({
-    name: "IndexPage",
-    components: { QuestionBuilder }
-})
+  name: "IndexPage",
+  components: { SourceDataBuilder },
+});
 </script>

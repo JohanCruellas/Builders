@@ -1,156 +1,75 @@
 <template>
-  <div class="q-pa-md container bg-amber-2">
-    <div class="categories" v-for="(data, dataIndex) in datas" :key="dataIndex">
-      <div class="category-title">{{ dataIndex }}</div>
-      <q-card class="" style="width: 100%; height: 100%">
-        <q-scroll-area class="scroll-area">
-          <ul>
-            <li>
-              <div class="flex">
-                <div class="q-mr-md">{{ data.data }}</div>
-                <q-icon name="settings" class="cursor-pointer"></q-icon>
-              </div>
-            </li>
-          </ul>
-        </q-scroll-area>
-      </q-card>
+  <div class="q-pa-md container bg-grey-2">
+    <div
+      class="categories"
+      v-for="(category, categoryIndex) in categories"
+      :key="categoryIndex"
+    >
+      <div class="bg-category" :style="{ 'background-color': category.color }">
+        <div class="category-title">{{ category.name }}</div>
+        <q-card class="card">
+          <q-scroll-area class="scroll-area">
+            <ul>
+              <li v-for="(data, dataIndex) in category.datas" :key="dataIndex">
+                <div class="flex">
+                  <div class="q-mr-md">{{ data.text }}</div>
+                  <q-icon
+                    name="settings"
+                    class="cursor-pointer"
+                    @click="openUpdateModal(categoryIndex, dataIndex)"
+                  ></q-icon>
+                  <q-icon
+                    name="close"
+                    class="cursor-pointer"
+                    @click="removeData(categoryIndex, dataIndex)"
+                  ></q-icon>
+                </div>
+              </li>
+            </ul>
+          </q-scroll-area>
+        </q-card>
+      </div>
     </div>
   </div>
-  <div class="footer">
-    <q-btn label="add new data" @click="persistent=true"/>
+  <div style="width: 100%" class="flex flex-center">
+    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal" />
   </div>
 
-  <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-    
+  <q-dialog
+    v-model="persistent"
+    persistent
+    transition-show="scale"
+    transition-hide="scale"
+  >
     <q-card style="width: 100%">
       <q-card-section>
-        <q-form @submit="onSubmit" class="form">
-          <q-input v-model="dataName" label="Nom de la donnée"/>
-          <q-input v-model="tooltip" label="Info tooltip"/>
+        <q-form class="form">
+          <q-input v-model="dataName" label="Nom de la donnée" />
+          <q-input v-model="tooltip" label="Info tooltip" />
+          <q-select v-model="select" :options="options"></q-select>
           <div class="flex flex-center">
-            <q-btn label="Enregistrer" type="submit" color="primary"/>
+            <q-btn
+              v-if="isEdited"
+              label="Modifier"
+              type="submit"
+              color="primary"
+              @click="saveEdit"
+            ></q-btn>
+            <q-btn
+              v-else
+              label="Enregistrer"
+              type="submit"
+              color="primary"
+              @click="addData"
+            />
           </div>
         </q-form>
       </q-card-section>
       <q-card-actions class="justify-end">
-      <q-btn flat label="Retour" v-close-popup float-right/>
-    </q-card-actions>
-    </q-card>
-    
-    
-  </q-dialog>
-
-  <!-- <q-input
-                class="cardInput"
-                lazy-rules
-                :placeholder="'Nom de la donnée'"
-                v-model="data.text"
-                :dense="true"
-              >
-                <template v-slot:append>
-                  <q-icon
-                    name="settings"
-                    @click="showDataConfigPanel(dataIndex)"
-                    class="cursor-pointer"
-                  />
-                  <q-icon
-                    name="close"
-                    @click="removeData(dataIndex)"
-                    class="cursor-pointer"
-                  />
-                </template>
-              </q-input>
-
-              <div class="answerAddBtnWrapper">
-                <q-btn
-                  push
-                  class="answerAddBtn"
-                  color="primary"
-                  size="sm"
-                  rounded
-                  icon="add"
-                  @click="addAnswer(dataIndex)"
-                />
-              </div> -->
-
-  <!-- <q-card-actions align="center">
-            <q-btn
-              push
-              class="cardActionBtn"
-              color="primary"
-              label="Add Data"
-              @click="addData"
-            />
-            <q-btn
-              push
-              color="primary"
-              label="ConsoleLog"buttoniconb
-              @click="consoleLog"
-            />
-            <q-btn
-              push
-              class="cardActionBtn"
-              color="primary"
-              label="Save"
-              @click="toJSON"
-            />
-          </q-card-actions> -->
-
-  <!-- <q-card dark bordered class="bg-grey-9 my-card">
-      <q-card-section>
-        <div class="text-h6">JSON Output</div>
-      </q-card-section>
-
-      <q-separator dark inset />
-
-      <q-card-section>
-        <pre>{{ JSONData }}</pre>
-      </q-card-section>
-    </q-card> -->
-
-  <!-- <q-dialog v-model="confirm" persistent>
-    <q-card style="min-width: 350px">
-      <q-card-section>
-        
-        <div class="text-h6">
-          Editing data {{ this.dataDialogContentIndex + 1 }}
-        </div>
-      </q-card-section>
-
-      <q-card-section id="dataDialogBox" class="q-pt-none">
-        <q-item-label header>Tooltip</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="info" />
-          </q-item-section>
-          <q-input
-            v-model="dataTooltip"
-            dense
-            @keyup.enter="prompt = false"
-          />
-        </q-item>
-        <q-item-label header>Ratio</q-item-label>
-        <q-item dense>
-          <q-item-section avatar>
-            <q-icon name="percent" />
-          </q-item-section>
-          <q-item-section>
-            <q-slider
-              color="teal"
-              v-model="dataSlider"
-              label
-              label-always
-              :step="1"
-            />
-          </q-item-section>
-        </q-item>
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Ok" v-close-popup />
+        <q-btn flat label="Retour" v-close-popup float-right />
       </q-card-actions>
     </q-card>
-  </q-dialog> -->
+  </q-dialog>
 </template>
 
 <script>
@@ -161,65 +80,180 @@ export default defineComponent({
   name: "sourceDataBuilder",
   data() {
     return {
-      datas: {
-        categorie1: {
-          data: "test",
+      categories: [
+        {
+          name: "Gouvernance",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "Nombre de réunions du COMEX intégrant le suivi de la démarche RSE",
+            },
+          ],
+          color: "#FFD966",
         },
-        categorie2: {
-          data: "test",
+        {
+          name: "Achats responsables",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "",
+            },
+          ],
+          color: "#F8CBAD",
         },
-        categorie3: {
-          data: "test",
+        {
+          name: "Relations et conditions de travail",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "Effectif total ",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "CDI ",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "Nombre d'Accidents du travail",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "Chiffre d'affaires",
+            },
+          ],
+          color: "#D6DCE5",
         },
-        categorie4: {
-          data: "test",
+        {
+          name: "Environnement",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "Volume de déchets total (tonnes)",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "Consommation électricité (KwH)",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "Nombre d'unités d'œuvres",
+            },
+            {
+              data_key: "",
+              info: "",
+              text: "Volume de déchets total (tonnes)",
+            },
+          ],
+          color: "#A9D18E",
         },
-        categorie5: {
-          data: "test",
+        {
+          name: "Conduite des affaires",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "",
+            },
+          ],
+          color: "#B4C7E7",
         },
-        categorie6: {
-          data: "test",
+        {
+          name: "Clients et consommateurs",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "",
+            },
+          ],
+          color: "#FF781D",
         },
-      },
+        {
+          name: "Communautés et développement local",
+          datas: [
+            {
+              data_key: "",
+              info: "",
+              text: "",
+            },
+          ],
+          color: "#F6B600",
+        },
+      ],
       persistent: false,
-      dataName: '',
-      tooltip: '',
-
-
-      confirm: false,
-      dataDialogContentIndex: [],
-      JSONData: "",
+      dataName: "",
+      tooltip: "",
+      select: "",
+      options: [],
+      stockedIndexes: [],
+      isEdited: false,
     };
   },
   methods: {
-
-    onSubmit() {
-
-    },
-  
-
-
-    consoleLog() {
-      console.log(this.datas);
-    },
     addData() {
-      this.datas.push(
-        new SourceData(/*`SourceData ${this.datas.length + 1}`*/)
+      let selectedCategory = this.categories.find(
+        (category) => category.name == this.select
       );
+      selectedCategory.datas.push(new SourceData(this.tooltip, this.dataName));
     },
-    removeData(dataIndex) {
-      this.datas.splice(dataIndex, 1);
+
+    openAddModal() {
+      this.persistent = true;
+      this.isEdited = false;
     },
-    showDataConfigPanel(dataIndex) {
-      this.dataDialogContentIndex = dataIndex;
-      this.confirm = true;
+
+    removeData(categoryIndex, dataIndex) {
+      let dataCategory = this.categories[categoryIndex].datas;
+      dataCategory.splice(dataIndex, 1);
     },
-    toJSON() {
-      this.JSONData = JSON.stringify(this.datas, null, 2);
+    openUpdateModal(categoryIndex, dataIndex) {
+      this.persistent = true;
+      this.isEdited = true;
+
+      this.dataName = this.categories[categoryIndex].datas[dataIndex].text;
+      this.tooltip = this.categories[categoryIndex].datas[dataIndex].info;
+      this.select = this.categories[categoryIndex].name;
+      this.stockedIndexes = [categoryIndex, dataIndex];
     },
+
+    saveEdit() {
+      this.categories[this.stockedIndexes[0]].datas[
+        this.stockedIndexes[1]
+      ].text = this.dataName;
+      this.categories[this.stockedIndexes[0]].datas[
+        this.stockedIndexes[1]
+      ].info = this.tooltip;
+
+      if (this.select !== this.categories[this.stockedIndexes[0]].name) {
+        let selectedItem = this.categories[this.stockedIndexes[0]].datas.splice(
+          this.stockedIndexes[1],
+          1
+        )[0];
+
+        this.categories
+          .find((category) => category.name == this.select)
+          .datas.push(selectedItem);
+        console.log(this.categories);
+      }
+
+      this.persistent = false;
+    },
+
   },
   mounted() {
-    //TODO Get default values
+
+    this.categories.forEach((category) => {
+      this.options.push(category.name);
+    });
   },
 });
 </script>
@@ -233,7 +267,7 @@ export default defineComponent({
   width: 90%;
   max-height: 80vh;
   height: 100vh;
-  border: 2px solid black
+  border: 2px solid black;
 }
 
 .categories {
@@ -241,6 +275,19 @@ export default defineComponent({
   flex-direction: column;
   flex-grow: 1;
   width: 40%;
+}
+
+.bg-category {
+  width: 100%;
+  height: 100%;
+  padding: 0.5em;
+}
+
+.card {
+  margin: 0.5em auto;
+  width: 95%;
+  height: 80%;
+  background-color: rgb(248, 240, 235);
 }
 
 .scroll-area {
@@ -252,6 +299,4 @@ export default defineComponent({
   flex-direction: column;
   row-gap: 1em;
 }
-
-
 </style>
