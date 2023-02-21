@@ -1,6 +1,6 @@
 export class Answer {
-    constructor(text) {
+    constructor(info, text) {
+        this.info = info;
         this.text = text;
-        this.ratio = 100;
     }
 }
