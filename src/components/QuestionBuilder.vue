@@ -8,7 +8,8 @@
               <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
                 :dense="true">
                 <template v-slot:append>
-                  <q-icon :name="question.isShown ? 'keyboard_arrow_down' : 'keyboard_arrow_left'" @click="toggleDropdown(question)" class="cursor-pointer" />
+                  <q-icon :name="question.isShown ? 'keyboard_arrow_down' : 'keyboard_arrow_left'"
+                    @click="toggleDropdown(question)" class="cursor-pointer" />
                   <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
                   <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
                 </template>
@@ -21,16 +22,17 @@
                       <q-btn round dense flat icon="circle" size="5px" />
                     </template>
                     <template v-slot:append>
-                      <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"></q-input>
+                      <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"
+                        :readonly="answerIndex === 0 || answerIndex + 1 === question.options.length"></q-input>
                       <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
                     </template>
                   </q-input>
                 </div>
-              <div class="answerAddBtnWrapper">
-                <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
-                  @click="addAnswer(questionIndex)" />
+                <div class="answerAddBtnWrapper">
+                  <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
+                    @click="addAnswer(questionIndex)" />
+                </div>
               </div>
-            </div>
             </div>
           </q-scroll-area>
           <q-card-actions align="center">
@@ -75,8 +77,11 @@
           <q-item-section avatar>
             <q-icon name="percent" />
           </q-item-section>
-          <q-item-section>
-            <q-slider color="teal" v-model="questionSlider" label label-always :step="1" />
+          <q-item-section no wrap>
+            <q-slider color="teal" v-model="questionSlider" :step="1" />
+          </q-item-section>
+          <q-item-section avatar>
+            <q-input v-model.number="questionSlider" teal type="number" filled style="max-width: 75px" />
           </q-item-section>
         </q-item>
         <q-item-label header>Other</q-item-label>
@@ -110,7 +115,7 @@ export default defineComponent({
     return {
       questions: [],
       isQuestionDialogOpen: false,
-      questionDialogContentIndex: [],
+      questionDialogContentIndex: null,
       ratioSlider: 1,
       JSONData: ""
     };
@@ -152,13 +157,13 @@ export default defineComponent({
       let defaultRatio = Math.round(100 / (nbAnswers - 1))
       switch (index) {
         case 0:
-        answer.ratio = 0;
+          answer.ratio = 0;
           break;
         case nbAnswers - 1:
-        answer.ratio = 100;
+          answer.ratio = 100;
           break;
         default:
-        answer.ratio = defaultRatio * index
+          answer.ratio = defaultRatio * index
       }
     },
     addAnswer(questionIndex) {
