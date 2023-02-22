@@ -8,7 +8,7 @@
 <script>
 import QuestionBuilder from "src/components/QuestionBuilder.vue";
 import { defineComponent } from "vue";
-import SourceDataBuilder from "../components/SourceDataBuilder.vue";
+import SourceDataCategories from "../components/SourceDataCategories.vue";
 
 export default defineComponent({
   name: "IndexPage",
