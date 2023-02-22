@@ -1,15 +1,15 @@
 <template>
   <q-page class="flex flex-center">
-    <SourceDataBuilder></SourceDataBuilder>
+    <SourceDataCategories></SourceDataCategories>
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from "vue";
-import SourceDataBuilder from "../components/SourceDataBuilder.vue";
+import SourceDataCategories from "../components/SourceDataCategories.vue";
 
 export default defineComponent({
   name: "IndexPage",
-  components: { SourceDataBuilder },
+  components: { SourceDataCategories },
 });
 </script>
