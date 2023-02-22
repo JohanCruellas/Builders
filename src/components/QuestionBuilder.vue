@@ -77,7 +77,7 @@
           <q-item-section avatar>
             <q-icon name="percent" />
           </q-item-section>
-          <q-item-section no wrap>
+          <q-item-section>
             <q-slider color="teal" v-model="questionSlider" :step="1" />
           </q-item-section>
           <q-item-section avatar>
