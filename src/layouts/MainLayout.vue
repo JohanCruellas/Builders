@@ -1,6 +1,5 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <!-- <QuestionBuilder></QuestionBuilder> -->
     <q-page-container>
       <router-view />
     </q-page-container>
