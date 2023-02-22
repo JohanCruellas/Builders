@@ -1,21 +1,23 @@
 <template>
-  <ul>
-    <li v-for="(data, dataIndex) in categoryDatas" :key="dataIndex">
-      <div class="flex">
-        <div class="q-mr-md">{{ data.text }}</div>
-        <q-icon
+  <q-list>
+    <q-item v-for="(data, dataIndex) in categoryDatas" :key="dataIndex" style="width:100%">
+        <q-item-section class="q-mr-md ">{{ data.text }}</q-item-section>
+        <q-item-section avatar nowrap>
+          <q-icon
           name="settings"
           class="cursor-pointer"
           @click="openUpdateModal(this.categoryIndexProp, dataIndex)"
         ></q-icon>
-        <q-icon
+        </q-item-section>
+        <q-item-section avatar>
+          <q-icon
           name="close"
           class="cursor-pointer"
           @click="removeData(dataIndex)"
         ></q-icon>
-      </div>
-    </li>
-  </ul>
+        </q-item-section>
+    </q-item>
+  </q-list>
 </template>
 
 <script>

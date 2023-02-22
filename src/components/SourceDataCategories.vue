@@ -19,9 +19,23 @@
       </div>
     </div>
   </div>
-  <div style="width: 100%" class="flex flex-center">
-    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal()" />
+  <div style="width: 100%" class="flex flex-center q-ma-md">
+    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal()" class="q-ma-md"/>
+    <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md"/>
   </div>
+
+  <q-card dark bordered class="bg-grey-9 my-card">
+      <q-card-section>
+        <div class="text-h6">JSON Output</div>
+      </q-card-section>
+
+      <q-separator dark inset />
+
+      <q-card-section>
+        <pre>{{ JSONData }}</pre>
+      </q-card-section>
+    </q-card>
+
   <q-dialog
     v-model="persistent"
     persistent
@@ -79,6 +93,8 @@ export default defineComponent({
       options: [],
       stockedIndexes: [],
       isEdited: false,
+      JSONData: null,
+      
     };
   },
   methods: {
@@ -91,6 +107,11 @@ export default defineComponent({
         (category) => category.name == this.select
       );
       selectedCategory.datas.push(new SourceData(this.tooltip, this.dataName));
+
+      this.dataName = "";
+      this.tooltip = "";
+      this.select = "";
+      this.persistent = false;
     },
     saveEdit() {
       this.categories[this.stockedIndexes[0]].datas[
@@ -122,6 +143,9 @@ export default defineComponent({
       this.stockedIndexes = event.stockedIndexes;
       this.isEdited = event.isEdited;
     },
+    toJSON() {
+      this.JSONData = JSON.stringify(templateStore.categories, null, 2)
+    }
   },
 
   mounted() {
