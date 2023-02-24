@@ -116,6 +116,26 @@ export const useTemplateStore = defineStore("templateStore", {
         categories: [
           {
             name: "Gourvernance",
+            children: [
+              {
+                name: "Sous-Gouvernance 1",
+                info: "",
+                color: "#FFD966",
+                questions: []
+              },
+              {
+                name: "Sous-Gouvernance 2",
+                info: "",
+                color: "#FFD966",
+                questions: []
+              },
+              {
+                name: "Sous-Gouvernance 3",
+                info: "",
+                color: "#FFD966",
+                questions: []
+              }
+            ],
             questions: [
 
             ],
@@ -124,6 +144,7 @@ export const useTemplateStore = defineStore("templateStore", {
           },
           {
             name: "Achats responsables",
+            children: [],
             questions: [
 
             ],
@@ -131,6 +152,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#F8CBAD",
           }, {
             name: "Relations et conditions de travail",
+            children: [],
             questions: [
 
             ],
@@ -138,6 +160,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#D6DCE5",
           }, {
             name: "Environnement",
+            children: [],
             questions: [
 
             ],

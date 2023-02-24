@@ -1,38 +1,54 @@
 <template>
-        <q-form class="q-gutter-md q-pa-md questionWrapper">
-          <q-scroll-area style="height: 400px;">
-            <div v-for="(question, questionIndex) in questions" :key="questionIndex">
-              <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
-                :dense="true">
-                <template v-slot:append>
-                  <q-icon :name="question.isShown ? 'keyboard_arrow_down' : 'keyboard_arrow_left'"
-                    @click="toggleDropdown(question)" class="cursor-pointer" />
-                  <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
-                  <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
-                </template>
-              </q-input>
-              <div v-if="question.isShown">
-                <div v-for="(answer, answerIndex) in question.options" :key="answerIndex">
-                  <q-input class="cardInput" lazy-rules :placeholder="'Answer ' + (answerIndex + 1)" v-model="answer.text"
-                    :dense="true">
-                    <template v-slot:before>
-                      <q-btn round dense flat icon="circle" size="5px" />
-                    </template>
-                    <template v-slot:append>
-                      <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"
-                        :readonly="answerIndex === 0 || answerIndex + 1 === question.options.length"></q-input>
-                      <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
-                    </template>
-                  </q-input>
-                </div>
-                <div class="answerAddBtnWrapper">
-                  <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
-                    @click="addAnswer(questionIndex)" />
-                </div>
-              </div>
-            </div>
-          </q-scroll-area>
-        </q-form>
+  <q-expansion-item v-for="(question, questionIndex) in questions" :key="questionIndex" expand-icon-toggle
+    switch-toggle-side :header-inset-level="0.25" :content-inset-level="1.5">
+    <template v-slot:header>
+      <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
+        :dense="true">
+        <template v-slot:append>
+          <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
+          <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
+        </template>
+        <template v-slot:before>
+          <q-icon name="circle" size="xs" />
+        </template>
+      </q-input>
+    </template>
+    <q-item v-for="(answer, answerIndex) in question.options" :key="answerIndex">
+      <q-input class="cardInput" lazy-rules :placeholder="'Answer ' + (answerIndex + 1)" v-model="answer.text"
+        :dense="true">
+        <template v-slot:before>
+          <q-icon name="radio_button_unchecked" size="xs" />
+        </template>
+        <template v-slot:append>
+          <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"
+            :readonly="(answerIndex === 0 && question.type === 'QCU') || (answerIndex + 1 === question.options.length && question.type === 'QCU')"></q-input>
+          <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
+        </template>
+      </q-input>
+    </q-item>
+    <q-item>
+      <q-input class="cardInput" v-model="newAnswerText" lazy-rules :placeholder="'Add Answer'" :dense="true"
+        @change="addAnswer(questionIndex)">
+        <template v-slot:before>
+          <q-icon name="add_circle_outline" size="xs" />
+        </template>
+      </q-input>
+    </q-item>
+    <!-- <div class="answerAddBtnWrapper">
+            <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
+              @click="addAnswer(questionIndex)" />
+          </div> -->
+  </q-expansion-item>
+  <q-item :inset-level="1.25">
+    <q-input class="cardInput" v-model="newQuestionText" lazy-rules :placeholder="'Add Question'" :dense="true"
+      @change="addQuestion()">
+      <template v-slot:before>
+        <q-icon name="add_circle" size="xs" />
+      </template>
+    </q-input>
+
+  </q-item>
+
 
   <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
@@ -62,7 +78,18 @@
             <q-input v-model.number="questionSlider" teal type="number" filled style="max-width: 75px" />
           </q-item-section>
         </q-item>
-        <q-item-label header>Other</q-item-label>
+        <q-item-label header>Type</q-item-label>
+        <q-item tag="label" v-ripple>
+          <q-item-section avatar>
+            <q-icon name="checklist" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Type</q-item-label>
+          </q-item-section>
+          <q-item-section avatar>
+            <q-select v-model="questionType" :options="questionTypeOptions" @update:model-value="questionTypeChanged(questionType, this.questionDialogContentIndex)"/>
+          </q-item-section>
+        </q-item>
         <q-item tag="label" v-ripple>
           <q-item-section avatar>
             <q-icon name="notes" />
@@ -83,6 +110,7 @@
 </template>
 
 <script>
+import { Question } from 'src/classes/question';
 import { defineComponent } from 'vue';
 import { Answer } from '../classes/answer.js'
 
@@ -96,10 +124,21 @@ export default defineComponent({
       questions: this.categoryData.questions,
       isQuestionDialogOpen: false,
       questionDialogContentIndex: null,
-      ratioSlider: 1
+      ratioSlider: 1,
+      newQuestionText: "",
+      newAnswerText: "",
+      questionTypeOptions: ["QCM", "QCU"]
     };
   },
   computed: {
+    questionType: {
+      get() {
+        return this.questions[this.questionDialogContentIndex].type
+      },
+      set(newvalue) {
+        this.questions[this.questionDialogContentIndex].type = newvalue
+      }
+    },
     questionSlider: {
       get() {
         return this.questions[this.questionDialogContentIndex].ratio
@@ -129,6 +168,12 @@ export default defineComponent({
     consoleLog() {
       console.log(this.questions)
     },
+    questionTypeChanged(questionType, questionIndex) {
+      if(questionType == "QCU") {
+      this.questions[questionIndex].options[0].ratio = 0;
+      this.questions[questionIndex].options.at(-1).ratio = 100;
+    }
+    },
     setDefaultRatio(answer, index, nbAnswers) {
       let defaultRatio = Math.round(100 / (nbAnswers - 1))
       switch (index) {
@@ -142,12 +187,19 @@ export default defineComponent({
           answer.ratio = defaultRatio * index
       }
     },
+    addQuestion() {
+      this.questions.push(new Question(this.newQuestionText));
+      this.newQuestionText = "";
+      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
+      // console.log(questionsTemplate.categories)
+    },
     addAnswer(questionIndex) {
-      this.questions[questionIndex].options.push(new Answer(/*`Answer ${this.questions[questionIndex].options.length + 1}`*/))
+      this.questions[questionIndex].options.push(new Answer(this.newAnswerText))
       let nbAnswers = this.questions[questionIndex].options.length;
       this.questions[questionIndex].options.forEach((answer, i) => {
         this.setDefaultRatio(answer, i, nbAnswers)
-      })
+      });
+      this.newAnswerText = "";
     },
     removeQuestion(questionIndex) {
       this.questions.splice(questionIndex, 1);
@@ -196,7 +248,7 @@ export default defineComponent({
 }
 
 .cardInput {
-  width:100%;
+  width: 100%;
   // max-width: fit-content;
 }
 

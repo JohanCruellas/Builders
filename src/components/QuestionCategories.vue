@@ -1,6 +1,6 @@
 <template>
     <q-card>
-        <q-tabs v-model="tabIndex" dense class="text-grey tabs" active-color="primary" indicator-color="primary"
+        <q-tabs v-model="tabIndex" dense class="text-grey tabsColor" active-color="primary" indicator-color="primary"
             align="justify" narrow-indicator>
             <q-tab v-for="(category, categoryIndex) in categories" :key="categoryIndex" :name="categoryIndex"
                 :label="category.name" />
@@ -9,17 +9,36 @@
         <q-separator />
 
         <q-tab-panels v-model="tabIndex" animated>
-            <q-tab-panel v-for="(category, categoryIndex) in categories" :key="categoryIndex" :name="categoryIndex">
-                <QuestionBuilder :category-data="category"></QuestionBuilder>
+            <q-tab-panel v-for="(category, categoryIndex) in categories" :key="categoryIndex" :name="categoryIndex"
+                class="tabsColorWashed">
+
+
+                <!-- <div v-if="category.children.length === 0">
+                    <QuestionBuilder :category-data="category"></QuestionBuilder>
+                </div> -->
+                <q-card class="subcategoryCard" v-for="(subcategory, subcategoryIndex) in category.children"
+                    :key="subcategoryIndex">
+                    <q-expansion-item expand-icon-toggle switch-toggle-side>
+                        <template v-slot:header>
+                            <q-input class="cardInput" lazy-rules :placeholder="'Subcategory ' + (subcategoryIndex + 1)"
+                                v-model=subcategory.name :dense="true">
+                                <template v-slot:append>
+                                    <q-icon name="close" @click="removeSubcategory(subcategoryIndex)"
+                                        class="cursor-pointer" />
+                                </template>
+                            </q-input>
+                        </template>
+                        <QuestionBuilder :category-data="subcategory"></QuestionBuilder>
+                    </q-expansion-item>
+                </q-card>
             </q-tab-panel>
         </q-tab-panels>
         <q-card-actions align="center">
-            <q-btn push class="cardActionBtn" color="primary" label="Add Question" @click="addQuestion" />
-            <!-- <q-btn push color="primary" label="ConsoleLog" @click="consoleLog" /> -->
+            <q-btn push class="cardActionBtn" color="primary" label="Add Subcategory" @click="addSubcategory" />
+            <!-- <q-btn push class="cardActionBtn" color="primary" label="Add Question" @click="addQuestion" /> -->
             <q-btn push class="cardActionBtn" color="primary" label="Save" @click="toJSON" />
         </q-card-actions>
     </q-card>
-
 
     <!-- <q-card v-for="(category, categoryIndex) in categories" :key="categoryIndex" flat bordered>
         <q-card-section>
@@ -42,7 +61,7 @@
 
 <script>
 import { useTemplateStore } from "src/stores/templateStore";
-import { Question } from '../classes/question.js'
+import { QuestionCategory } from "src/classes/questionCategory";
 import { defineComponent } from "vue";
 import QuestionBuilder from './QuestionBuilder.vue';
 import { storeToRefs } from "pinia";
@@ -58,9 +77,11 @@ export default defineComponent({
         }
     },
     methods: {
-        addQuestion() {
-            templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-            // console.log(questionsTemplate.categories)
+        addSubcategory() {
+            this.categories[this.tabIndex].children.push(new QuestionCategory("", "", this.categories[this.tabIndex].color));
+        },
+        removeSubcategory(subcategoryIndex) {
+
         },
         toJSON() {
             templateStore.questionsTemplate.categories.forEach((category) => {
@@ -85,7 +106,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.tabs {
+.tabsColor {
     background-color: v-bind(tabBgColor);
+}
+
+.tabsColorWashed {
+    background-color: v-bind(tabBgColor);
+}
+
+.cardInput {
+    width: 100%;
+    // max-width: fit-content;
+}
+
+.subcategoryCard {
+    margin: 0 0 10px 0;
 }
 </style>
