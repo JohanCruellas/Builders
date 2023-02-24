@@ -2,7 +2,7 @@
   <q-list>
     <q-item v-for="(data, dataIndex) in categoryDatas" :key="dataIndex" style="width:100%">
         <q-item-section class="q-mr-md ">{{ data.text }}</q-item-section>
-        <q-item-section avatar nowrap>
+        <q-item-section avatar>
           <q-icon
           name="settings"
           class="cursor-pointer"
@@ -30,8 +30,8 @@ export default defineComponent({
   props: ["categoryIndexProp"],
   data() {
     return {
-      categoryDatas: templateStore.categories[this.categoryIndexProp].datas,
-      categoryName: templateStore.categories[this.categoryIndexProp].name,
+      categoryDatas: templateStore.templateDataSource.categories[this.categoryIndexProp].datas,
+      categoryName: templateStore.templateDataSource.categories[this.categoryIndexProp].name,
     };
   },
   methods: {
