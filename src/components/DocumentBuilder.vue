@@ -5,12 +5,11 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 
 export default {
-    setup() {
+    data() {
         return {
-            editor: ref('')
+            editor: '',
         }
     }
 }

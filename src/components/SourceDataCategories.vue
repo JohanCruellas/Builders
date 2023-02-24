@@ -1,18 +1,11 @@
 <template>
   <div class="q-pa-md container bg-grey-2">
-    <div
-      class="categories"
-      v-for="(category, categoryIndex) in categories"
-      :key="categoryIndex"
-    >
+    <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
       <div class="bg-category" :style="{ 'background-color': category.color }">
         <div class="category-title">{{ category.name }}</div>
         <q-card class="card">
           <q-scroll-area class="scroll-area">
-            <SourceDataBuilder
-              :categoryIndexProp="categoryIndex"
-              @currentDatasSettings="showDataSettings"
-            >
+            <SourceDataBuilder :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings">
             </SourceDataBuilder>
           </q-scroll-area>
         </q-card>
@@ -40,12 +33,7 @@
     </q-card-section>
   </q-card>
 
-  <q-dialog
-    v-model="persistent"
-    persistent
-    transition-show="scale"
-    transition-hide="scale"
-  >
+  <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
@@ -53,20 +41,8 @@
           <q-input v-model="tooltip" label="Info tooltip" />
           <q-select v-model="select" :options="options"></q-select>
           <div class="flex flex-center">
-            <q-btn
-              v-if="isEdited"
-              label="Modifier"
-              type="submit"
-              color="primary"
-              @click="saveEdit"
-            ></q-btn>
-            <q-btn
-              v-else
-              label="Enregistrer"
-              type="submit"
-              color="primary"
-              @click="addData"
-            />
+            <q-btn v-if="isEdited" label="Modifier" type="submit" color="primary" @click="saveEdit"></q-btn>
+            <q-btn v-else label="Enregistrer" type="submit" color="primary" @click="addData" />
           </div>
         </q-form>
       </q-card-section>
