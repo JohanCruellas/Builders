@@ -1,18 +1,11 @@
 <template>
   <div class="q-pa-md container bg-grey-2">
-    <div
-      class="categories"
-      v-for="(category, categoryIndex) in categories"
-      :key="categoryIndex"
-    >
+    <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
       <div class="bg-category" :style="{ 'background-color': category.color }">
         <div class="category-title">{{ category.name }}</div>
         <q-card class="card">
           <q-scroll-area class="scroll-area">
-            <SourceDataBuilder
-              :categoryIndexProp="categoryIndex"
-              @currentDatasSettings="showDataSettings"
-            >
+            <SourceDataBuilder :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings">
             </SourceDataBuilder>
           </q-scroll-area>
         </q-card>
@@ -20,28 +13,23 @@
     </div>
   </div>
   <div style="width: 100%" class="flex flex-center q-ma-md">
-    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal()" class="q-ma-md"/>
-    <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md"/>
+    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal()" class="q-ma-md" />
+    <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md" />
   </div>
 
   <q-card dark bordered class="bg-grey-9 my-card">
-      <q-card-section>
-        <div class="text-h6">JSON Output</div>
-      </q-card-section>
+    <q-card-section>
+      <div class="text-h6">JSON Output</div>
+    </q-card-section>
 
-      <q-separator dark inset />
+    <q-separator dark inset />
 
-      <q-card-section>
-        <pre>{{ JSONData }}</pre>
-      </q-card-section>
-    </q-card>
+    <q-card-section>
+      <pre>{{ JSONData }}</pre>
+    </q-card-section>
+  </q-card>
 
-  <q-dialog
-    v-model="persistent"
-    persistent
-    transition-show="scale"
-    transition-hide="scale"
-  >
+  <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
@@ -49,20 +37,8 @@
           <q-input v-model="tooltip" label="Info tooltip" />
           <q-select v-model="select" :options="options"></q-select>
           <div class="flex flex-center">
-            <q-btn
-              v-if="isEdited"
-              label="Modifier"
-              type="submit"
-              color="primary"
-              @click="saveEdit"
-            ></q-btn>
-            <q-btn
-              v-else
-              label="Enregistrer"
-              type="submit"
-              color="primary"
-              @click="addData"
-            />
+            <q-btn v-if="isEdited" label="Modifier" type="submit" color="primary" @click="saveEdit"></q-btn>
+            <q-btn v-else label="Enregistrer" type="submit" color="primary" @click="addData" />
           </div>
         </q-form>
       </q-card-section>
@@ -94,7 +70,7 @@ export default defineComponent({
       stockedIndexes: [],
       isEdited: false,
       JSONData: null,
-      
+
     };
   },
   methods: {

@@ -112,6 +112,40 @@ export const useTemplateStore = defineStore("templateStore", {
           color: "#F6B600",
         },
       ],
+      questionsTemplate: {
+        categories: [
+          {
+            name: "Gourvernance",
+            questions: [
+
+            ],
+            info: "",
+            color: "#FFD966",
+          },
+          {
+            name: "Achats responsables",
+            questions: [
+
+            ],
+            info: "",
+            color: "#F8CBAD",
+          }, {
+            name: "Relations et conditions de travail",
+            questions: [
+
+            ],
+            info: "",
+            color: "#D6DCE5",
+          }, {
+            name: "Environnement",
+            questions: [
+
+            ],
+            info: "",
+            color: "#A9D18E",
+          }
+        ]
+      }
     };
   },
 });

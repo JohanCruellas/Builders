@@ -1,9 +1,6 @@
 <template>
-  <div class="q-pa-md" style="max-width: 800px">
-    <q-card>
-      <q-card-section>
-        <q-form class="q-gutter-md q-pa-md">
-          <q-scroll-area style="height: 400px; width:500px; max-width: 800px;">
+        <q-form class="q-gutter-md q-pa-md questionWrapper">
+          <q-scroll-area style="height: 400px;">
             <div v-for="(question, questionIndex) in questions" :key="questionIndex">
               <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
                 :dense="true">
@@ -35,26 +32,7 @@
               </div>
             </div>
           </q-scroll-area>
-          <q-card-actions align="center">
-            <q-btn push class="cardActionBtn" color="primary" label="Add Question" @click="addQuestion" />
-            <!-- <q-btn push color="primary" label="ConsoleLog" @click="consoleLog" /> -->
-            <q-btn push class="cardActionBtn" color="primary" label="Save" @click="toJSON" />
-          </q-card-actions>
         </q-form>
-      </q-card-section>
-    </q-card>
-    <q-card dark bordered class="bg-grey-9 my-card">
-      <q-card-section>
-        <div class="text-h6">JSON Output</div>
-      </q-card-section>
-
-      <q-separator dark inset />
-
-      <q-card-section>
-        <pre>{{ JSONData }}</pre>
-      </q-card-section>
-    </q-card>
-  </div>
 
   <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
@@ -106,18 +84,19 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { Question } from '../classes/question.js'
 import { Answer } from '../classes/answer.js'
+
+// const templateStore = useTemplateStore()
 
 export default defineComponent({
   name: "QuestionBuilder",
+  props: ['categoryData'],
   data() {
     return {
-      questions: [],
+      questions: this.categoryData.questions,
       isQuestionDialogOpen: false,
       questionDialogContentIndex: null,
-      ratioSlider: 1,
-      JSONData: ""
+      ratioSlider: 1
     };
   },
   computed: {
@@ -149,9 +128,6 @@ export default defineComponent({
   methods: {
     consoleLog() {
       console.log(this.questions)
-    },
-    addQuestion() {
-      this.questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
     },
     setDefaultRatio(answer, index, nbAnswers) {
       let defaultRatio = Math.round(100 / (nbAnswers - 1))
@@ -190,9 +166,6 @@ export default defineComponent({
     },
     toggleDropdown(question) {
       question.isShown = !(question.isShown)
-    },
-    toJSON() {
-      this.JSONData = JSON.stringify(this.questions, null, 2)
     }
   },
   mounted() {
@@ -223,7 +196,7 @@ export default defineComponent({
 }
 
 .cardInput {
-  width: 25vw;
+  width:100%;
   // max-width: fit-content;
 }
 
