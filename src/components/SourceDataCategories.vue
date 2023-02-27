@@ -13,7 +13,11 @@
     </div>
   </div>
   <div style="width: 100%" class="flex flex-center q-ma-md">
-    <q-btn label="Ajouter une nouvelle donnée" @click="openAddModal()" class="q-ma-md" />
+    <q-btn
+      label="Ajouter une nouvelle donnée"
+      @click="openAddModal()"
+      class="q-ma-md"
+    />
     <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md" />
   </div>
 
@@ -70,14 +74,23 @@ export default defineComponent({
       stockedIndexes: [],
       isEdited: false,
       JSONData: null,
-
     };
   },
   methods: {
+
+    // ouvre la modale d'ajout de données
     openAddModal() {
       this.persistent = true;
       this.isEdited = false;
+
+      //  rénitialisation à zéro pour éviter d'afficher les données si ajout de données après modification de données
+
+      this.dataName = "";
+      this.tooltip = "";
+      this.select = "";
     },
+
+    // ajoute la donnée 
     addData() {
       let selectedCategory = this.categories.find(
         (category) => category.name == this.select
@@ -89,6 +102,8 @@ export default defineComponent({
       this.select = "";
       this.persistent = false;
     },
+
+
     saveEdit() {
       this.categories[this.stockedIndexes[0]].datas[
         this.stockedIndexes[1]
@@ -111,6 +126,8 @@ export default defineComponent({
 
       this.persistent = false;
     },
+
+
     showDataSettings(event) {
       this.persistent = event.persistent;
       this.dataName = event.dataName;
@@ -119,13 +136,15 @@ export default defineComponent({
       this.stockedIndexes = event.stockedIndexes;
       this.isEdited = event.isEdited;
     },
+
+    
     toJSON() {
-      this.JSONData = JSON.stringify(templateStore.categories, null, 2)
-    }
+      this.JSONData = JSON.stringify(templateStore.categories, null, 2);
+    },
   },
 
   mounted() {
-    this.categories = templateStore.categories;
+    this.categories = templateStore.templateDataSource.categories;
     this.categories.forEach((category) => {
       this.options.push(category.name);
     });
