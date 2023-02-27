@@ -1,8 +1,8 @@
 <template>
   <q-page class="flex flex-center">
     <!-- <SourceDataBuilder></SourceDataBuilder> -->
-    <!-- <QuestionBuilder></QuestionBuilder> -->
     <QuestionCategories></QuestionCategories>
+    <!-- <DocumentBuilder></DocumentBuilder> -->
   </q-page>
 </template>
 

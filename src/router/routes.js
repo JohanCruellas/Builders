@@ -7,6 +7,13 @@ const routes = [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
   },
+  {
+    path: '/DocumentBuilder',
+    component: ()=> import('layouts/DocumentBuilderLayout.vue'),
+    children: [
+      {path : '', component: ()=> import('pages/DocumentBuilderPage.vue')}
+    ]
+  },
 
   // Always leave this as last one,
   // but you can also remove it
