@@ -1,10 +1,10 @@
 <template>
   <q-card-section>
     <q-form class="form">
-      <label class="title">Sélection d'une donnée source</label>
+      <label class="title">{{ $t('dataSelectorTitle') }}</label>
 
       <!-- barre de recherche de données sources-->
-      <q-btn-dropdown color="primary" label="Catégories">
+      <q-btn-dropdown color="primary" :label="$t('dataCategorySelectorBtn')">
         <div
           v-for="(category, categoryIndex) in categories"
           :key="categoryIndex"
@@ -18,7 +18,7 @@
         </div>
       </q-btn-dropdown>
 
-      <q-input label="Recherche de données" v-model="dataName"></q-input>
+      <q-input :label="$t('dataSearchInput')" v-model="dataName"></q-input>
 
       <q-scroll-area class="scroll">
         <q-list

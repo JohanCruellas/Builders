@@ -123,7 +123,11 @@ export const useTemplateStore = defineStore("templateStore", {
         indicators: [
           {
             indicator_key: "d0128a84-8e36-4db4-af91-981bb85aeb60",
-            text: "Pourcentage de femmes dans l'entreprise",
+            text: {
+              frFR: "Pourcentage de femmes dans l'entreprise",
+              enUS: "Percentage of women in the company",
+            }
+            ,
             type: "Percent",
             formula:
               "{{#data:d0128a84-8e36-4db4-af91-981bb85aeb60}} / {{d0128a84-8e36-4db4-af91-981bb85aeb61}} * 100",
@@ -134,7 +138,10 @@ export const useTemplateStore = defineStore("templateStore", {
           },
           {
             indicator_key: "d0128a84-8e36-4db4-af91-981bb85aeb60",
-            text: "Parité Homme/Femme",
+            text: {
+              frFR: "Parité Homme/Femme",
+              enUS: "Man/Woman parity",
+            },
             type: "Compare",
             data_keys: [
               "d0128a84-8e36-4db4-af91-981bb85aeb60 Nombre d'hommes",

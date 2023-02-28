@@ -3,16 +3,17 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
-const app = createApp({})
+import { defineComponent } from "vue";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
 
-const pinia = createPinia()
-	app.use(pinia)
+const app = createApp({});
+
+const pinia = createPinia();
+app.use(pinia);
 
 export default defineComponent({
-  name: 'App'
-})
+  name: "App",
+});
 </script>

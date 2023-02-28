@@ -1,35 +1,39 @@
 <template>
-  <div class="flex justify-evenly" style="width: 100vw">
+  <div class="flex justify-evenly indicatorBuilderPage" style="width: 100vw">
     <q-card v-if="isShown" class="addIndicatorModal">
-      
       <SourceDataSelector @selectedData="updateFormula"></SourceDataSelector>
-      
+
       <q-card-section>
         <q-form class="form">
-          <label class="title" v-if="isModified">Modifier un indicateur</label>
-          <label class="title" v-else>Ajout d'un indicateur</label>
+          <label class="title" v-if="isModified">{{
+            $t("indicatorModifyTitle")
+          }}</label>
+          <label class="title" v-else>{{ $t("indicatorAddTitle") }}</label>
           <q-input
-            label="Nom de l'indicateur"
+            :label="$t('indicatorNameInput')"
             v-model="indicatorName"
           ></q-input>
           <q-select
-            label="Type de données"
+            :label="$t('indicatorTypeInput')"
             v-model="indicatorType"
             :options="indicatorOptions"
             option-value="type"
             option-label="name"
           ></q-select>
-          <q-input label="Formule de calcul" v-model="formula"></q-input>
+          <q-input
+            :label="$t('indicatorFormulaInput')"
+            v-model="formula"
+          ></q-input>
 
           <q-btn
-            label="Modifier"
+            :label="$t('indicatorModifyBtn')"
             type="submit"
             color="primary"
             @click="modifyIndicator(indicatorIndex)"
             v-if="isModified"
           ></q-btn>
           <q-btn
-            label="Enregistrer"
+            :label="$t('indicatorSaveBtn')"
             type="submit"
             color="primary"
             @click="addIndicator"
@@ -39,13 +43,18 @@
       </q-card-section>
 
       <q-card-actions class="justify-end">
-        <q-btn flat label="Retour" float-right @click="this.isShown = false" />
+        <q-btn
+          flat
+          :label="$t('indicatorReturnBtn')"
+          float-right
+          @click="this.isShown = false"
+        />
       </q-card-actions>
     </q-card>
 
     <q-card class="indicatorBuilderWrapper">
-      <label class="title q-my-md">Liste des indicateurs</label>
-      <!-- <q-card class="card">
+      <label class="title q-my-md">{{ $t("indicatorListTitle") }}</label>
+      <q-card class="card categoryTabs">
         <q-tabs
           v-for="(category, categoryIndex) in categories"
           :key="categoryIndex"
@@ -57,18 +66,22 @@
           align="justify"
           narrow-indicator
         >
-          <q-tab style="width: 100%">{{ category.name }}</q-tab>
+          <q-tab>{{ category.name }}</q-tab>
         </q-tabs>
-      </q-card> -->
+      </q-card>
       <q-scroll-area class="indicatorScroll">
-        <q-input label="Recherche d'indicateur" v-model="indicatorInput"></q-input>
+        <q-input
+          :label="$t('indicatorInput')"
+          v-model="indicatorInput"
+          filled
+        ></q-input>
         <q-list class="indicatorList">
           <q-item
             v-for="(indicator, indicatorIndex) in filteredIndicators"
             :key="indicatorIndex"
           >
             <q-item-section class="q-mr-md">{{
-              indicator.text
+              indicator.text[getLocalLanguage]
             }}</q-item-section>
             <q-item-section avatar>
               <q-icon
@@ -88,7 +101,7 @@
         </q-list>
       </q-scroll-area>
       <q-btn
-        label="Ajouter un indicateur"
+        :label="$t('indicatorAddButton')"
         color="primary"
         @click="openAddIndicatorModal"
         class="q-mt-lg"
@@ -125,20 +138,24 @@ export default defineComponent({
       indicatorIndex: "",
       isShown: false,
       isModified: false,
-      // tab: "",
+      lang: "",
+      currentIndicatorIndex: "",
+      tab: "",
     };
   },
   methods: {
-
     // ajoute un nouvel indicateur
     addIndicator() {
+
       this.indicators.push({
         indicator_key: "",
-        text: this.indicatorName,
+        text: {[this.getLocalLanguage]: this.indicatorName},
         type: this.indicatorType.type,
         formula: this.formula,
         data_keys: Object.values(this.indicatorDataKeys),
       });
+
+      console.log(this.indicators);
     },
 
     openAddIndicatorModal() {
@@ -160,28 +177,32 @@ export default defineComponent({
       this.isModified = true;
       this.indicatorIndex = index;
 
-      this.indicatorName = this.indicators[index].text;
-      console.log(this.indicatorName);
+      this.currentIndicatorIndex = index;
+      
+      this.indicatorName = this.indicators[index].text[this.getLocalLanguage];
 
       this.indicatorType = this.indicators[index].type;
-      console.log(this.indicatorType);
 
       this.formula = this.indicators[index].formula;
     },
 
     modifyIndicator(index) {
-      this.indicators[index].text = this.indicatorName;
+      this.indicators[index].text[this.getLocalLanguage] = this.indicatorName;
       this.indicators[index].type = this.indicatorType;
       this.indicators[index].formula = this.formula;
 
       this.isModified = false;
+      this.isShown = false;
     },
 
     updateFormula(event) {
       let newFormulaArray = this.formula.concat(event);
       this.formula = newFormulaArray;
-    }
+    },
 
+    getLang() {
+      this.lang = this.getLocalLanguage;
+    }
   },
   computed: {
     // computed qui gère les cas si l'utilisateur filtre par catégorie et/ou tapant une string pour chercher une donnée en particulier
@@ -207,27 +228,43 @@ export default defineComponent({
     },
 
     filteredIndicators() {
-      if(this.indicatorInput === "") {
+      if (this.indicatorInput === "") {
         return this.indicators;
       } else {
-        let filteredIndicators = this.indicators.filter(element => element.text.toLowerCase().includes(this.indicatorInput.toLowerCase()))
-          return filteredIndicators;
+        let filteredIndicators = this.indicators.filter((element) =>
+          element.text.toLowerCase().includes(this.indicatorInput.toLowerCase())
+        );
+        return filteredIndicators;
       }
-      
     },
 
     selectedDatas() {
       this.getSelectedDatas();
       return this.selectedData;
     },
+
+    getLocalLanguage() {
+      return this.$i18n.locale;
+    },
   },
   components: {
-    SourceDataSelector
+    SourceDataSelector,
+  },
+  watch: {
+    getLocalLanguage() {
+      if(this.isShown) {
+        this.indicatorName = this.indicators[this.currentIndicatorIndex].text[this.getLocalLanguage];
+      }
+    }
   }
 });
 </script>
 
 <style lang="scss" scoped>
+.indicatorBuilderPage {
+  align-items: center;
+}
+
 .form,
 .indicatorList {
   display: flex;
@@ -243,7 +280,7 @@ export default defineComponent({
 
 .indicatorList {
   width: 90%;
-  margin: 1em auto;
+  margin: 2em auto;
 }
 
 .title {
@@ -269,9 +306,13 @@ export default defineComponent({
   background-color: rgb(224, 232, 240);
 }
 
-.addIndicatorModal,
+.addIndicatorModal {
+  width: 20%;
+}
+
+
 .indicatorBuilderWrapper {
-  width: 45%;
+  width: 65%;
 }
 
 .indicatorBuilderWrapper {
@@ -281,9 +322,14 @@ export default defineComponent({
   background-color: beige;
   height: 70vh;
   padding: 1em;
+  row-gap: 1em;
 }
 
 .addIndicatorModal {
   background-color: beige;
+}
+
+.categoryTabs {
+  margin: 0 auto;
 }
 </style>
