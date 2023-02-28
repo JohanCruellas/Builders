@@ -1,45 +1,9 @@
 <template>
   <div class="flex justify-evenly" style="width: 100vw">
     <q-card v-if="isShown" class="addIndicatorModal">
-      <q-card-section>
-        <q-form class="form">
-          <label class="title">Sélection d'une donnée source</label>
-
-          <!-- barre de recherche de données sources-->
-          <q-btn-dropdown color="primary" label="Catégories">
-            <div
-              v-for="(category, categoryIndex) in categories"
-              :key="categoryIndex"
-            >
-              <!-- checkbox pour la sélection des catégories à filtrer -->
-              <q-checkbox
-                v-model="checkedCategories"
-                :val="category.name"
-                :label="category.name"
-              ></q-checkbox>
-            </div>
-          </q-btn-dropdown>
-
-          <q-input label="Recherche de données" v-model="dataName"></q-input>
-
-          <q-scroll-area class="scroll">
-            <q-list
-              v-for="(data, dataIndex) in filteredDatas"
-              :key="dataIndex"
-              bordered
-              separator
-              class="data"
-            >
-              <q-item clickable @click="getSelectedDatas(dataIndex)">
-                <q-item-section>
-                  <q-item-label>{{ data.label }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-scroll-area>
-        </q-form>
-      </q-card-section>
-
+      
+      <SourceDataSelector @selectedData="updateFormula"></SourceDataSelector>
+      
       <q-card-section>
         <q-form class="form">
           <label class="title" v-if="isModified">Modifier un indicateur</label>
@@ -97,36 +61,38 @@
         </q-tabs>
       </q-card> -->
       <q-scroll-area class="indicatorScroll">
+        <q-input label="Recherche d'indicateur" v-model="indicatorInput"></q-input>
         <q-list class="indicatorList">
-        <q-item
-          v-for="(indicator, indicatorIndex) in indicators"
-          :key="indicatorIndex"
-        >
-          <q-item-section class="q-mr-md">{{ indicator.text }}</q-item-section>
-          <q-item-section avatar>
-            <q-icon
-              name="settings"
-              class="cursor-pointer"
-              @click="openModifyIndicatorModal(indicatorIndex)"
-            ></q-icon>
-          </q-item-section>
-          <q-item-section avatar>
-            <q-icon
-              name="close"
-              class="cursor-pointer"
-              @click="removeIndicator(indicatorIndex)"
-            ></q-icon>
-          </q-item-section>
-        </q-item>
-      </q-list>
+          <q-item
+            v-for="(indicator, indicatorIndex) in filteredIndicators"
+            :key="indicatorIndex"
+          >
+            <q-item-section class="q-mr-md">{{
+              indicator.text
+            }}</q-item-section>
+            <q-item-section avatar>
+              <q-icon
+                name="settings"
+                class="cursor-pointer"
+                @click="openModifyIndicatorModal(indicatorIndex)"
+              ></q-icon>
+            </q-item-section>
+            <q-item-section avatar>
+              <q-icon
+                name="close"
+                class="cursor-pointer"
+                @click="removeIndicator(indicatorIndex)"
+              ></q-icon>
+            </q-item-section>
+          </q-item>
+        </q-list>
       </q-scroll-area>
       <q-btn
-          label="Ajouter un indicateur"
-          color="primary"
-          @click="openAddIndicatorModal"
-          class="q-mt-lg"
-        ></q-btn>
-      
+        label="Ajouter un indicateur"
+        color="primary"
+        @click="openAddIndicatorModal"
+        class="q-mt-lg"
+      ></q-btn>
     </q-card>
   </div>
 </template>
@@ -134,6 +100,8 @@
 <script>
 import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
+import SourceDataSelector from "./SourceDataSelector.vue";
+
 const templateStore = useTemplateStore();
 
 export default defineComponent({
@@ -142,75 +110,35 @@ export default defineComponent({
     return {
       categories: templateStore.templateDataSource.categories,
       indicators: templateStore.templateIndicators.indicators,
-      checkedCategories: [],
       isEdited: false,
       formula: [],
-      dataName: "",
       dataOptions: [],
+      indicatorInput: "",
       indicatorName: "",
       indicatorType: "",
       indicatorDataKeys: [],
       indicatorOptions: [
         { type: "percent", name: "Pourcentage" },
-        { type: "compare", name: "Ratio" },
+        { type: "ratio", name: "Ratio" },
+        { type: "calcul", name: "Autre" }, // noms placeholder pour les valeurs type salaire médian
       ],
       indicatorIndex: "",
-      selectedData: [],
       isShown: false,
       isModified: false,
       // tab: "",
     };
   },
   methods: {
-    // affiche dans une liste toutes les données sources déjà stockées
-    getAllData() {
-      this.categories.forEach((category) => {
-        let categoryDatas = category.datas;
-        categoryDatas.forEach((data) => {
-          this.dataOptions.push({
-            label: data.text,
-            category: category.name,
-            data_key: data.data_key,
-          });
-
-          // éviter de push valeur déjà présente dans dataOptions
-
-          this.dataOptions = [...new Set(this.dataOptions)];
-        });
-      });
-    },
-
-    // créé un nouveau tableau qui concatène les données sources et ce qui est entré dans la formule de calcul
-    getSelectedDatas(dataIndex) {
-      this.selectedData.push(this.filteredDatas[dataIndex].data_key);
-      this.indicatorDataKeys.push(this.filteredDatas[dataIndex].data_key);
-      this.indicatorDataKeys = [...new Set(this.indicatorDataKeys)];
-
-      console.log(this.formula)
-
-      let newFormulaArray = this.formula.concat(this.selectedData);
-      this.selectedData = [];
-      this.formula = newFormulaArray;
-    },
 
     // ajoute un nouvel indicateur
     addIndicator() {
-      if (this.indicatorType.type == "percent") {
-        this.indicators.push({
-          indicator_key: "",
-          text: this.indicatorName,
-          type: this.indicatorType.type,
-          formula: this.formula,
-          data_keys: Object.values(this.indicatorDataKeys),
-        });
-      } else {
-        this.indicators.push({
-          indicator_key: "",
-          text: this.indicatorName,
-          type: this.indicatorType.type,
-          data_keys: Object.values(this.indicatorDataKeys),
-        });
-      }
+      this.indicators.push({
+        indicator_key: "",
+        text: this.indicatorName,
+        type: this.indicatorType.type,
+        formula: this.formula,
+        data_keys: Object.values(this.indicatorDataKeys),
+      });
     },
 
     openAddIndicatorModal() {
@@ -233,7 +161,11 @@ export default defineComponent({
       this.indicatorIndex = index;
 
       this.indicatorName = this.indicators[index].text;
+      console.log(this.indicatorName);
+
       this.indicatorType = this.indicators[index].type;
+      console.log(this.indicatorType);
+
       this.formula = this.indicators[index].formula;
     },
 
@@ -244,9 +176,12 @@ export default defineComponent({
 
       this.isModified = false;
     },
-  },
-  mounted() {
-    this.getAllData();
+
+    updateFormula(event) {
+      let newFormulaArray = this.formula.concat(event);
+      this.formula = newFormulaArray;
+    }
+
   },
   computed: {
     // computed qui gère les cas si l'utilisateur filtre par catégorie et/ou tapant une string pour chercher une donnée en particulier
@@ -271,11 +206,24 @@ export default defineComponent({
       }
     },
 
+    filteredIndicators() {
+      if(this.indicatorInput === "") {
+        return this.indicators;
+      } else {
+        let filteredIndicators = this.indicators.filter(element => element.text.toLowerCase().includes(this.indicatorInput.toLowerCase()))
+          return filteredIndicators;
+      }
+      
+    },
+
     selectedDatas() {
       this.getSelectedDatas();
       return this.selectedData;
     },
   },
+  components: {
+    SourceDataSelector
+  }
 });
 </script>
 
@@ -303,11 +251,6 @@ export default defineComponent({
   font-size: 2em;
 }
 
-.scroll {
-  height: 10vh;
-}
-
-.data:nth-child(even),
 .tabs:nth-child(even) {
   background-color: aliceblue;
 }
@@ -320,10 +263,6 @@ export default defineComponent({
 
 .tabs {
   flex-grow: 1;
-}
-
-.data:nth-child(odd) {
-  background-color: rgb(240, 247, 183);
 }
 
 .tabs:nth-child(odd) {
