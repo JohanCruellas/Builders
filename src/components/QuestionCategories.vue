@@ -61,10 +61,9 @@
 
 <script>
 import { useTemplateStore } from "src/stores/templateStore";
-import { QuestionCategory } from "src/classes/questionCategory";
+import { QuestionCategory } from "src/classes/question_category";
 import { defineComponent } from "vue";
 import QuestionBuilder from './QuestionBuilder.vue';
-import { storeToRefs } from "pinia";
 
 const templateStore = useTemplateStore()
 // const { questionsTemplate } = storeToRefs(templateStore)

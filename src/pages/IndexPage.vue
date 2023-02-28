@@ -1,32 +1,16 @@
 <template>
   <q-page class="flex flex-center">
-    <q-select
-      v-model="lang"
-      :options="langOptions"
-      label="Quasar Language"
-      filled
-      dense
-      borderless
-      emit-value
-      map-options
-      options-dense
-      style="min-width: 150px"
-      class="language fixed-right"
-    />
-    <!-- <SourceDataCategories></SourceDataCategories> -->
-    <!-- <QuestionBuilder></QuestionBuilder> -->
-    <!-- <QuestionCategories></QuestionCategories> -->
-    <IndicatorBuilder></IndicatorBuilder>
-
+    <q-btn @click="goRoute('SourceData')">SourceData Builder</q-btn>
+    <q-btn @click="goRoute('Question')">Question Builder</q-btn>
+    <q-btn @click="goRoute('Indicator')">Indicator Builder</q-btn>
+    <q-btn @click="goRoute('Document')">Document Builder</q-btn>
   </q-page>
 </template>
 
 <script>
-import QuestionBuilder from "src/components/QuestionBuilder.vue";
-import SourceDataCategories from "../components/SourceDataCategories.vue";
-import IndicatorBuilder from "src/components/IndicatorBuilder.vue";
-import QuestionCategories from "src/components/QuestionCategories.vue";
-import DocumentBuilder from "src/components/DocumentBuilder.vue";
+
+// import IndicatorBuilder from "src/components/IndicatorBuilder.vue";
+
 import { defineComponent } from "vue";
 // import { useI18n } from 'vue-i18n'
 
@@ -44,8 +28,26 @@ export default defineComponent({
   components: {
     // SourceDataCategories,
     // QuestionCategories,
-    IndicatorBuilder,
+    // IndicatorBuilder,
   },
+  methods: {
+    goRoute(route) {
+      switch (route) {
+        case 'SourceData':
+          this.$router.push("DataSource")
+          break;
+        case 'Question':
+          this.$router.push("Question")
+          break;
+        case 'Indicator':
+          this.$router.push("Indicator")
+          break;
+        case 'Document':
+          this.$router.push("Document")
+          break;
+      }
+    }
+  }
   watch: {
     lang(lang) {
       this.$i18n.locale = lang;

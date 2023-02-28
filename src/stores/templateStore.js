@@ -10,7 +10,6 @@ export const useTemplateStore = defineStore("templateStore", {
             datas: [
               {
                 data_key: "data_key_1",
-
                 info: "",
                 text: "Nombre de réunions du COMEX intégrant le suivi de la démarche RSE",
               },
@@ -130,10 +129,10 @@ export const useTemplateStore = defineStore("templateStore", {
             ,
             type: "Percent",
             formula:
-              "{{#data:d0128a84-8e36-4db4-af91-981bb85aeb60}} / {{d0128a84-8e36-4db4-af91-981bb85aeb61}} * 100",
+              "#data:d0128a84-8e36-4db4-af91-981bb85aeb60 / #data:d0128a84-8e36-4db4-af91-981bb85aeb61 * 100",
             data_keys: [
-              "d0128a84-8e36-4db4-af91-981bb85aeb60 Nombre de femmes",
-              "d0128a84-8e36-4db4-af91-981bb85aeb61 Nombre d'empployés",
+              "d0128a84-8e36-4db4-af91-981bb85aeb60",
+              "d0128a84-8e36-4db4-af91-981bb85aeb61",
             ],
           },
           {
