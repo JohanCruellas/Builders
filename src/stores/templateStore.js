@@ -4,10 +4,6 @@ export const useTemplateStore = defineStore("templateStore", {
   state: () => {
     return {
       templateDataSource: {
-        name: {
-          frFR: "Gourvernance",
-          enUS: "Gourvernance"
-      },
         categories: [
           {
             name: "Gouvernance",

@@ -4,9 +4,11 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
-      {path : 'Doc', component: ()=> import('pages/DocumentBuilderPage.vue')}
-
+      {path: '', component: () => import('pages/IndexPage.vue') },
+      {path : 'Document', component: ()=> import('pages/DocumentBuilderPage.vue')},
+      {path : 'Indicator', component: ()=> import('pages/IndicatorBuilderPage.vue')},
+      {path : 'DataSource', component: ()=> import('pages/SourceDataBuilderPage.vue')},
+      {path : 'Question', component: ()=> import('pages/QuestionBuilderPage.vue')},
     ]
   },
 
