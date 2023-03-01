@@ -6,7 +6,7 @@ export const useTemplateStore = defineStore("templateStore", {
       templateDataSource: {
         categories: [
           {
-            name: "Gouvernance",
+            text: { frFR: "Gouvernance", enUS: "Governance" },
             datas: [
               {
                 data_key: "data_key_1",
@@ -17,7 +17,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#FFD966",
           },
           {
-            name: "Achats responsables",
+            text: { frFR: "Achats responsables", enUS: "Responsible purchases" },
             datas: [
               {
                 data_key: "data_key_2",
@@ -29,7 +29,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#F8CBAD",
           },
           {
-            name: "Relations et conditions de travail",
+            text: "Relations et conditions de travail",
             datas: [
               {
                 data_key: "data_key_3",
@@ -59,7 +59,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#D6DCE5",
           },
           {
-            name: "Environnement",
+            text: "Environnement",
             datas: [
               {
                 data_key: "data_key_7",
@@ -83,7 +83,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#A9D18E",
           },
           {
-            name: "Conduite des affaires",
+            text: "Conduite des affaires",
             datas: [
               {
                 data_key: "data_key_10",
@@ -95,7 +95,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#B4C7E7",
           },
           {
-            name: "Clients et consommateurs",
+            text: "Clients et consommateurs",
             datas: [
               {
                 data_key: "",
@@ -106,7 +106,7 @@ export const useTemplateStore = defineStore("templateStore", {
             color: "#FF781D",
           },
           {
-            name: "Communautés et développement local",
+            text: "Communautés et développement local",
             datas: [
               {
                 data_key: "",
@@ -124,7 +124,7 @@ export const useTemplateStore = defineStore("templateStore", {
             indicator_key: "d0128a84-8e36-4db4-af91-981bb85aeb60",
             text: {
               frFR: "Pourcentage de femmes dans l'entreprise",
-              // enUS: "Percentage of women in the company",
+              enUS: "Percentage of women in the company",
             },
             type: "Percent",
             formula:
