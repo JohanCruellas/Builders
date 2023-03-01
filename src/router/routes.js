@@ -8,6 +8,7 @@ const routes = [
       {path : 'Indicator', component: ()=> import('pages/IndicatorBuilderPage.vue')},
       {path : 'DataSource', component: ()=> import('pages/SourceDataBuilderPage.vue')},
       {path : 'Question', component: ()=> import('pages/QuestionBuilderPage.vue')},
+      {path : 'Axis', component: ()=> import('pages/AxisBuilderPage.vue')}
     ]
   },
   {

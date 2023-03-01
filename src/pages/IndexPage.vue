@@ -1,10 +1,11 @@
 <template>
-  
-  <q-page class="flex flex-center">    
+  <q-page class="flex flex-center">
     <q-btn @click="goRoute('SourceData')">SourceData Builder</q-btn>
     <q-btn @click="goRoute('Question')">Question Builder</q-btn>
     <q-btn @click="goRoute('Indicator')">Indicator Builder</q-btn>
     <q-btn @click="goRoute('Document')">Document Builder</q-btn>
+    <q-btn @click="goRoute('Axis')">Axis Builder</q-btn>
+    <q-btn @click="log()">Axis Builder</q-btn>
   </q-page>
 </template>
 
@@ -32,6 +33,9 @@ export default defineComponent({
     // IndicatorBuilder,
   },
   methods: {
+    log() {
+      console.log(this.$APP_NAME)
+    },
     goRoute(route) {
       switch (route) {
         case 'SourceData':
@@ -46,10 +50,13 @@ export default defineComponent({
         case 'Document':
           this.$router.push("builders/Document")
           break;
+        case 'Axis':
+          this.$router.push("builders/Axis")
+          break;
       }
     }
   }
-,  watch: {
+  , watch: {
     lang(lang) {
       this.$i18n.locale = lang;
     },
