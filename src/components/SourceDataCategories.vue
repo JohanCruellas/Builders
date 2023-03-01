@@ -2,7 +2,7 @@
   <div class="q-pa-md container bg-grey-2">
     <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
       <div class="bg-category" :style="{ 'background-color': category.color }">
-        <div class="category-title">{{ category.name }}</div>
+        <div class="category-title">{{$getTrad(category.text, $i18n.locale)}}</div>
         <q-card class="card">
           <q-scroll-area class="scroll-area">
             <SourceDataBuilder :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings">
@@ -37,7 +37,7 @@
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
-          <q-input v-model="dataName" label="Nom de la donnée" />
+          <q-input v-model="dataText" label="Nom de la donnée" />
           <q-input v-model="tooltip" label="Info tooltip" />
           <q-select v-model="select" :options="options"></q-select>
           <div class="flex flex-center">
@@ -59,7 +59,9 @@ import SourceDataBuilder from "./SourceDataBuilder.vue";
 import { useTemplateStore } from "src/stores/templateStore";
 import { SourceData } from "src/classes/source_data";
 
+
 const templateStore = useTemplateStore();
+
 
 export default defineComponent({
   name: "SourceDataCategories",
@@ -67,7 +69,7 @@ export default defineComponent({
     return {
       categories: [],
       persistent: false,
-      dataName: "",
+      dataText: "",
       tooltip: "",
       select: "",
       options: [],
@@ -85,7 +87,7 @@ export default defineComponent({
 
       //  rénitialisation à zéro pour éviter d'afficher les données si ajout de données après modification de données
 
-      this.dataName = "";
+      this.dataText = "";
       this.tooltip = "";
       this.select = "";
     },
@@ -95,9 +97,9 @@ export default defineComponent({
       let selectedCategory = this.categories.find(
         (category) => category.name == this.select
       );
-      selectedCategory.datas.push(new SourceData(this.tooltip, this.dataName));
+      selectedCategory.datas.push(new SourceData(this.tooltip, this.dataText));
 
-      this.dataName = "";
+      this.dataText = "";
       this.tooltip = "";
       this.select = "";
       this.persistent = false;
@@ -107,7 +109,7 @@ export default defineComponent({
     saveEdit() {
       this.categories[this.stockedIndexes[0]].datas[
         this.stockedIndexes[1]
-      ].text = this.dataName;
+      ].text = this.dataText;
       this.categories[this.stockedIndexes[0]].datas[
         this.stockedIndexes[1]
       ].info = this.tooltip;
@@ -130,7 +132,7 @@ export default defineComponent({
 
     showDataSettings(event) {
       this.persistent = event.persistent;
-      this.dataName = event.dataName;
+      this.dataText = event.dataText;
       this.tooltip = event.tooltip;
       this.select = event.select;
       this.stockedIndexes = event.stockedIndexes;
@@ -148,6 +150,8 @@ export default defineComponent({
     this.categories.forEach((category) => {
       this.options.push(category.name);
     });
+
+
   },
   components: {
     SourceDataBuilder,

@@ -24,7 +24,7 @@ module.exports = configure(function (/* ctx */) {
     boot: [
       // ...
       "i18n",
-      "i18n-dynamic",
+      "i18n-dynamic"
     ],
 
     // https://v2.quasar.dev/quasar-cli/prefetch-feature

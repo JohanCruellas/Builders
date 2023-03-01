@@ -25,13 +25,14 @@ import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
 const templateStore = useTemplateStore();
 
+
 export default defineComponent({
   name: "sourceDataBuilder",
   props: ["categoryIndexProp"],
   data() {
     return {
       categoryDatas: templateStore.templateDataSource.categories[this.categoryIndexProp].datas,
-      categoryName: templateStore.templateDataSource.categories[this.categoryIndexProp].name,
+      categoryText: templateStore.templateDataSource.categories[this.categoryIndexProp].text,
     };
   },
   methods: {
@@ -42,14 +43,16 @@ export default defineComponent({
       let currentDatasSettings = {
         persistent: true,
         isEdited: true,
-        dataName: this.categoryDatas[dataIndex].text,
+        dataText: this.categoryDatas[dataIndex].text,
         tooltip: this.categoryDatas[dataIndex].info,
-        select: this.categoryName,
+        select: this.categoryText,
         stockedIndexes: [categoryIndex, dataIndex],
       };
-
       this.$emit("currentDatasSettings", currentDatasSettings);
     },
   },
+  mounted() {
+    
+  }
 });
 </script>

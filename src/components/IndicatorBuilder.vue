@@ -273,9 +273,9 @@ export default defineComponent({
       return this.selectedData;
     },
 
-    getLocalLanguage() {
-      return this.$i18n.locale;
-    },
+    // getLocalLanguage() {
+    //   return this.$i18n.locale;
+    // },
   },
   components: {
     SourceDataSelector,
@@ -283,7 +283,7 @@ export default defineComponent({
   watch: {
     getLocalLanguage() {
       if(this.isShown) {
-        this.indicatorName = this.indicators[this.currentIndicatorIndex].text[this.getLocalLanguage];
+        this.indicatorName = this.indicators[this.currentIndicatorIndex].text[this.$i18n.locale];
       }
     }
   }
