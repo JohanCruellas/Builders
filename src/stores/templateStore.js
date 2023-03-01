@@ -124,9 +124,8 @@ export const useTemplateStore = defineStore("templateStore", {
             indicator_key: "d0128a84-8e36-4db4-af91-981bb85aeb60",
             text: {
               frFR: "Pourcentage de femmes dans l'entreprise",
-              enUS: "Percentage of women in the company",
-            }
-            ,
+              // enUS: "Percentage of women in the company",
+            },
             type: "Percent",
             formula:
               "#data:d0128a84-8e36-4db4-af91-981bb85aeb60 / #data:d0128a84-8e36-4db4-af91-981bb85aeb61 * 100",
