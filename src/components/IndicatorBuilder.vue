@@ -1,33 +1,4 @@
 <template>
-
-<!-- <q-layout view="hHh lpR fFf"> -->
-
-<!-- <q-header elevated class="bg-primary text-white" height-hint="98">
-  <q-toolbar>
-    <q-btn dense flat round icon="menu" @click="left = !left" />
-
-    <q-toolbar-title>
-      
-    </q-toolbar-title>
-  </q-toolbar>
-
-  <q-tabs align="left">
-    <q-route-tab to="/page1" label="Page One" />
-    <q-route-tab to="/page2" label="Page Two" />
-    <q-route-tab to="/page3" label="Page Three" />
-  </q-tabs>
-</q-header>
-
-<q-drawer show-if-above v-model="left" side="left" bordered>
-
-</q-drawer> -->
-
-<q-page-container>
-  <router-view />
-</q-page-container>
-
-<!-- </q-layout> -->
-  
   <div class="flex justify-evenly indicatorBuilderPage" style="width: 100vw">
     <q-card v-if="isShown" class="addIndicatorModal">
       <SourceDataSelector @selectedData="updateFormula"></SourceDataSelector>
@@ -38,16 +9,58 @@
             $t("indicatorModifyTitle")
           }}</label>
           <label class="title" v-else>{{ $t("indicatorAddTitle") }}</label>
+          <q-input :label="$t('indicatorNameInput')" v-model="indicatorName">
+            <template v-slot:after>
+              <q-icon
+                v-if="isModified"
+                name="translate"
+                class="cursor-pointer"
+                @click="
+                  this.$openModal({
+                    index: this.currentIndicatorIndex,
+                    type: 'indicators',
+                    input: 'text',
+                  })
+                "
+              ></q-icon>
+            </template>
+          </q-input>
           <q-input
-            :label="$t('indicatorNameInput')"
-            v-model="indicatorName"
-          ></q-input>
+            :label="$t('indicatorTooltipInput')"
+            v-model="indicatorTooltip"
+          >
+            <template v-slot:after>
+              <q-icon
+                v-if="isModified"
+                name="translate"
+                class="cursor-pointer"
+                @click="
+                  this.$openModal({
+                    index: this.currentIndicatorIndex,
+                    type: 'indicators',
+                    input: 'tooltip',
+                  })
+                "
+              ></q-icon>
+            </template>
+          </q-input>
           <q-select
             :label="$t('indicatorTypeInput')"
             v-model="indicatorType"
             :options="indicatorOptions"
-            option-value="type"
-            option-label="name"
+            ><template v-slot:after>
+              <q-icon
+                v-if="isModified"
+                name="translate"
+                class="cursor-pointer"
+                @click="
+                  this.$openModal({
+                    index: this.currentIndicatorIndex,
+                    type: 'indicators',
+                    input: 'select',
+                  })
+                "
+              ></q-icon> </template
           ></q-select>
           <q-input
             :label="$t('indicatorFormulaInput')"
@@ -55,14 +68,14 @@
           ></q-input>
 
           <q-btn
-            :label="$t('indicatorModifyBtn')"
+            :label="$t('modifyBtn')"
             type="submit"
             color="primary"
             @click="modifyIndicator(indicatorIndex)"
             v-if="isModified"
           ></q-btn>
           <q-btn
-            :label="$t('indicatorSaveBtn')"
+            :label="$t('saveBtn')"
             type="submit"
             color="primary"
             @click="addIndicator"
@@ -74,7 +87,7 @@
       <q-card-actions class="justify-end">
         <q-btn
           flat
-          :label="$t('indicatorReturnBtn')"
+          :label="$t('closeBtn')"
           float-right
           @click="this.isShown = false"
         />
@@ -83,21 +96,6 @@
 
     <q-card class="indicatorBuilderWrapper">
       <label class="title q-my-md">{{ $t("indicatorListTitle") }}</label>
-      <q-card class="card categoryTabs">
-        <q-tabs
-          v-for="(category, categoryIndex) in categories"
-          :key="categoryIndex"
-          v-model="tab"
-          dense
-          class="text-grey tabs"
-          active-color="primary"
-          indicator-color="primary"
-          align="justify"
-          narrow-indicator
-        >
-          <q-tab>{{ category.name }}</q-tab>
-        </q-tabs>
-      </q-card>
       <q-scroll-area class="indicatorScroll">
         <q-input
           :label="$t('indicatorInput')"
@@ -110,7 +108,7 @@
             :key="indicatorIndex"
           >
             <q-item-section class="q-mr-md">{{
-              indicator.text[getLocalLanguage]
+              $getTrad(indicator.text, $i18n.locale)
             }}</q-item-section>
             <q-item-section avatar>
               <q-icon
@@ -137,12 +135,15 @@
       ></q-btn>
     </q-card>
   </div>
+
+  <TranslateModal></TranslateModal>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
 import SourceDataSelector from "./SourceDataSelector.vue";
+import TranslateModal from "src/components/TranslateModal.vue";
 
 const templateStore = useTemplateStore();
 
@@ -150,42 +151,50 @@ export default defineComponent({
   name: "IndicatorBuilder",
   data() {
     return {
-      categories: templateStore.templateDataSource.categories,
-      indicators: templateStore.templateIndicators.indicators,
+      categories: templateStore.sourceDataTemplate.categories,
+      indicators: templateStore.indicatorsTemplate.indicators,
       isEdited: false,
       formula: [],
       dataOptions: [],
       indicatorInput: "",
       indicatorName: "",
+      indicatorTooltip: "",
       indicatorType: "",
       indicatorDataKeys: [],
       indicatorOptions: [
-        { type: "percent", name: "Pourcentage" },
-        { type: "ratio", name: "Ratio" },
-        { type: "calcul", name: "Autre" }, // noms placeholder pour les valeurs type salaire médian
+        this.$t("percent"),
+        this.$t("ratio"),
+        this.$t("rawValue"),
+        this.$t("sourceData"),
       ],
+
       indicatorIndex: "",
       isShown: false,
       isModified: false,
       lang: "",
       currentIndicatorIndex: "",
-      tab: "",
-      left: false
+      // tab: "",
+      left: false,
+      modal: false,
+      dataProp: "",
     };
   },
   methods: {
     // ajoute un nouvel indicateur
     addIndicator() {
-
       this.indicators.push({
         indicator_key: "",
-        text: {[this.getLocalLanguage]: this.indicatorName},
-        type: this.indicatorType.type,
+        text: { [this.$i18n.locale]: this.indicatorName },
+        info: { [this.$i18n.locale]: this.indicatorTooltip },
+        type: { [this.$i18n.locale]: this.indicatorType },
         formula: this.formula,
         data_keys: Object.values(this.indicatorDataKeys),
       });
 
-      console.log(this.indicators);
+      this.indicatorName = "";
+      this.indicatorTooltip = "";
+      this.indicatorType = "";
+      this.formula = "";
     },
 
     openAddIndicatorModal() {
@@ -194,6 +203,7 @@ export default defineComponent({
       this.isShown = true;
 
       this.indicatorName = "";
+      this.indicatorTooltip = "";
       this.indicatorType = "";
       this.formula = "";
     },
@@ -208,17 +218,18 @@ export default defineComponent({
       this.indicatorIndex = index;
 
       this.currentIndicatorIndex = index;
-      
-      this.indicatorName = this.indicators[index].text[this.getLocalLanguage];
 
-      this.indicatorType = this.indicators[index].type;
+      this.indicatorName = this.indicators[index].text[this.$i18n.locale];
+      this.indicatorTooltip = this.indicators[index].info[this.$i18n.locale];
+      this.indicatorType = this.indicators[index].type[this.$i18n.locale];
 
       this.formula = this.indicators[index].formula;
     },
 
     modifyIndicator(index) {
-      this.indicators[index].text[this.getLocalLanguage] = this.indicatorName;
-      this.indicators[index].type = this.indicatorType;
+      this.indicators[index].text[this.$i18n.locale] = this.indicatorName;
+      this.indicators[index].info[this.$i18n.locale] = this.indicatorTooltip;
+      this.indicators[index].type[this.$i18n.locale] = this.indicatorType;
       this.indicators[index].formula = this.formula;
 
       this.isModified = false;
@@ -226,13 +237,9 @@ export default defineComponent({
     },
 
     updateFormula(event) {
-      let newFormulaArray = this.formula.concat(event);
+      let newFormulaArray = this.formula.concat(Array.from(event));
       this.formula = newFormulaArray;
     },
-
-    getLang() {
-      this.lang = this.getLocalLanguage;
-    }
   },
   computed: {
     // computed qui gère les cas si l'utilisateur filtre par catégorie et/ou tapant une string pour chercher une donnée en particulier
@@ -272,21 +279,11 @@ export default defineComponent({
       this.getSelectedDatas();
       return this.selectedData;
     },
-
-    // getLocalLanguage() {
-    //   return this.$i18n.locale;
-    // },
   },
   components: {
     SourceDataSelector,
+    TranslateModal,
   },
-  watch: {
-    getLocalLanguage() {
-      if(this.isShown) {
-        this.indicatorName = this.indicators[this.currentIndicatorIndex].text[this.$i18n.locale];
-      }
-    }
-  }
 });
 </script>
 
@@ -313,10 +310,10 @@ export default defineComponent({
   margin: 2em auto;
 }
 
-.title {
-  text-align: center;
-  font-size: 2em;
-}
+// .title {
+//   text-align: center; utilisé globalement dans App.vue
+//   font-size: 2em;
+// }
 
 .tabs:nth-child(even) {
   background-color: aliceblue;
@@ -339,7 +336,6 @@ export default defineComponent({
 .addIndicatorModal {
   width: 20%;
 }
-
 
 .indicatorBuilderWrapper {
   width: 65%;

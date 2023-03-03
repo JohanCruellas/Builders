@@ -1,7 +1,7 @@
 <template>
   <q-list>
     <q-item v-for="(data, dataIndex) in categoryDatas" :key="dataIndex" style="width:100%">
-        <q-item-section class="q-mr-md ">{{ data.text }}</q-item-section>
+        <q-item-section class="q-mr-md ">{{ $getTrad(data.text, $i18n.locale) }}</q-item-section>
         <q-item-section avatar>
           <q-icon
           name="settings"
@@ -31,8 +31,8 @@ export default defineComponent({
   props: ["categoryIndexProp"],
   data() {
     return {
-      categoryDatas: templateStore.templateDataSource.categories[this.categoryIndexProp].datas,
-      categoryText: templateStore.templateDataSource.categories[this.categoryIndexProp].text,
+      categoryDatas: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].datas,
+      categoryText: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].text,
     };
   },
   methods: {
@@ -43,16 +43,13 @@ export default defineComponent({
       let currentDatasSettings = {
         persistent: true,
         isEdited: true,
-        dataText: this.categoryDatas[dataIndex].text,
-        tooltip: this.categoryDatas[dataIndex].info,
-        select: this.categoryText,
+        dataText: this.categoryDatas[dataIndex].text[this.$i18n.locale],
+        tooltip: this.categoryDatas[dataIndex].info[this.$i18n.locale],
+        select: this.categoryText[this.$i18n.locale],
         stockedIndexes: [categoryIndex, dataIndex],
       };
       this.$emit("currentDatasSettings", currentDatasSettings);
     },
   },
-  mounted() {
-    
-  }
 });
 </script>

@@ -1,4 +1,11 @@
 export default {
+
+    // general
+    saveBtn: "Enregistrer",
+    modifyBtn: "Modifier",
+    closeBtn: "Fermer",
+    sourceDataSelect: "Sélectionnez une catégorie",
+
     // indicatorBuilder
     indicatorListTitle: "Liste des indicateurs",
     indicatorInput: "Recherche d'indicateur",
@@ -6,15 +13,31 @@ export default {
     indicatorModifyTitle: "Modifier un indicateur",
     indicatorAddTitle: "Ajouter un indicateur",
     indicatorNameInput: "Nom de l'indicateur",
+    indicatorTooltipInput: "Infobulle de l'indicateur",
     indicatorTypeInput: "Type de l'indicateur",
     indicatorFormulaInput: "Formule de l'indicateur",
-    indicatorSaveBtn: "Enregistrer",
-    indicatorModifyBtn: "Modifier",
-    indicatorReturnBtn: "Retour",
+    percent: "Pourcentage",
+    ratio: "Ratio",
+    rawValue: "Valeur brute",
+    sourceData: "Donnée source",
 
     // SourceDataSelector
-    dataSelectorTitle: "Sélectionnez votre donnée",
-    dataCategorySelectorBtn: "Catégories",
-    dataSearchInput: "Recherchez votre donnée",
+    sourceDataSelectorTitle: "Sélectionnez votre donnée",
+    sourceDataSearchInput: "Recherchez votre donnée",
 
+    //  builderLayout
+    sourceDataTab: "Données sources",
+    indicatorTab: "Indicateurs",
+    questionTab: "Questions",
+    documentTab: "Documents",
+
+    // TranslateModal
+
+
+    // SourceDataCategories
+    sourceDataListTitle: "Liste des données sources",
+    sourceDataAddButton: "Ajouter une nouvelle donnée source",
+    sourceDataNameInput: "Nom de la donnée source",
+    sourceDataTooltipInput: "Infobulle de la donnée source",
+    
 }
