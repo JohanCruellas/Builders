@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers'
-
+import { useGlobalStore } from "../stores/globalStore.js";
 
 export default boot(({app}) => {
   app.config.globalProperties.$getTrad = (objectText, localLanguage) => {
@@ -23,4 +23,13 @@ export default boot(({app}) => {
       return "";
     }
   };
+  app.config.globalProperties.$openModal = (object) => {
+    app.config.globalProperties.$store.modal = true;
+    app.config.globalProperties.$store.index = object.index;
+    app.config.globalProperties.$store.type = object.type;
+    app.config.globalProperties.$store.input = object.input;
+  }
+  app.config.globalProperties.$store = useGlobalStore()
+
+
 })

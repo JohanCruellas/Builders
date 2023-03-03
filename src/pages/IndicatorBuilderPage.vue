@@ -1,12 +1,14 @@
 <template>
     <q-page class="flex flex-center">
       <IndicatorBuilder></IndicatorBuilder>
+      
     </q-page>
   </template>
   
   <script>
   
   import IndicatorBuilder from "src/components/IndicatorBuilder.vue";
+ 
   
   import { defineComponent } from "vue";
   
@@ -16,6 +18,7 @@
       // SourceDataCategories,
       // QuestionCategories,
       IndicatorBuilder,
+
     },
   });
   </script>

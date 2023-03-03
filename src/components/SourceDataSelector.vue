@@ -1,10 +1,10 @@
 <template>
   <q-card-section>
     <q-form class="form">
-      <label class="title">{{ $t('dataSelectorTitle') }}</label>
+      <label class="title">{{ $t('sourceDataSelectorTitle') }}</label>
 
       <!-- barre de recherche de données sources-->
-      <q-btn-dropdown color="primary" :label="$t('dataCategorySelectorBtn')">
+      <q-btn-dropdown color="primary" :label="$t('sourceDataSelect')">
         <div
           v-for="(category, categoryIndex) in categories"
           :key="categoryIndex"
@@ -13,12 +13,12 @@
           <q-checkbox
             v-model="checkedCategories"
             :val="category.name"
-            :label="category.name"
+            :label="category.text[$i18n.locale]"
           ></q-checkbox>
         </div>
       </q-btn-dropdown>
 
-      <q-input :label="$t('dataSearchInput')" v-model="dataName"></q-input>
+      <q-input :label="$t('sourceDataSearchInput')" v-model="dataName"></q-input>
 
       <q-scroll-area class="scroll">
         <q-list
@@ -30,7 +30,7 @@
         >
           <q-item clickable @click="getSelectedDatas(dataIndex)">
             <q-item-section>
-              <q-item-label>{{ data.label }}</q-item-label>
+              <q-item-label>{{ $getTrad(data.label, $i18n.locale) }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -48,13 +48,14 @@ export default defineComponent({
   name: "IndicatorBuilder",
   data() {
     return {
-      categories: templateStore.templateDataSource.categories,
+      categories: templateStore.sourceDataTemplate.categories,
       checkedCategories: [],
       dataName: "",
       dataOptions: [],
       selectedData: [],
       indicatorData: [],
-      // formula: [],
+      modal: false,
+      dataProp: '',
     };
   },
   methods: {
@@ -65,10 +66,9 @@ export default defineComponent({
         categoryDatas.forEach((data) => {
           this.dataOptions.push({
             label: data.text,
-            category: category.name,
+            category: category.text,
             data_key: data.data_key,
           });
-
           // éviter de push valeur déjà présente dans dataOptions
 
           this.dataOptions = [...new Set(this.dataOptions)];

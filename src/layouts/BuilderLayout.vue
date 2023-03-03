@@ -11,10 +11,10 @@
       </q-toolbar>
 
       <q-tabs align="center">
-        <q-route-tab to="/builders/DataSource" label="DataSource" />
-        <q-route-tab to="/builders/Indicator" label="Indicator" />
-        <q-route-tab to="/builders/Question" label="Question" />
-        <q-route-tab to="/builders/Document" label="Document" />
+        <q-route-tab to="/builders/DataSource" :label="$t('sourceDataTab')" />
+        <q-route-tab to="/builders/Indicator" :label="$t('indicatorTab')" />
+        <q-route-tab to="/builders/Question" :label="$t('questionTab')" />
+        <q-route-tab to="/builders/Document" :label="$t('documentTab')" />
       </q-tabs>
 
 

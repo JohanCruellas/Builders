@@ -1,4 +1,5 @@
 <template>
+  <label class="title">{{ $t("sourceDataListTitle") }}</label>
   <div class="q-pa-md container bg-grey-2">
     <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
       <div class="bg-category" :style="{ 'background-color': category.color }">
@@ -14,14 +15,14 @@
   </div>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn
-      label="Ajouter une nouvelle donnée"
+      :label="$t('sourceDataAddButton')"
       @click="openAddModal()"
       class="q-ma-md"
     />
-    <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md" />
+    <!-- <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md" /> -->
   </div>
 
-  <q-card dark bordered class="bg-grey-9 my-card">
+  <!-- <q-card dark bordered class="bg-grey-9 my-card">
     <q-card-section>
       <div class="text-h6">JSON Output</div>
     </q-card-section>
@@ -31,23 +32,41 @@
     <q-card-section>
       <pre>{{ JSONData }}</pre>
     </q-card-section>
-  </q-card>
+  </q-card> -->
 
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
-          <q-input v-model="dataText" label="Nom de la donnée" />
-          <q-input v-model="tooltip" label="Info tooltip" />
-          <q-select v-model="select" :options="options"></q-select>
+          <q-input v-model="dataText" :label="$t('sourceDataNameInput')">
+            <!-- <template v-slot:after>
+              <q-icon
+                v-if="isModified"
+                name="translate"
+                class="cursor-pointer"
+                @click="
+                  this.$openModal({
+                    index: this.currentIndicatorIndex,
+                    type: 'indicators',
+                    input: 'text',
+                  })
+                "
+              ></q-icon>
+            </template>-->
+          </q-input> 
+
+          <q-input v-model="tooltip" :label="$t('sourceDataTooltipInput')" />
+
+          <q-select v-model="select" :label="$t('sourceDataSelect')" :options="options"></q-select>
+
           <div class="flex flex-center">
-            <q-btn v-if="isEdited" label="Modifier" type="submit" color="primary" @click="saveEdit"></q-btn>
-            <q-btn v-else label="Enregistrer" type="submit" color="primary" @click="addData" />
+            <q-btn v-if="isEdited" :label="$t('modifyBtn')" type="submit" color="primary" @click="saveEdit"></q-btn>
+            <q-btn v-else :label="$t('saveBtn')" type="submit" color="primary" @click="addData" />
           </div>
         </q-form>
       </q-card-section>
       <q-card-actions class="justify-end">
-        <q-btn flat label="Retour" v-close-popup float-right />
+        <q-btn flat :label="$t('closeBtn')" v-close-popup float-right />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -146,9 +165,9 @@ export default defineComponent({
   },
 
   mounted() {
-    this.categories = templateStore.templateDataSource.categories;
+    this.categories = templateStore.sourceDataTemplate.categories;
     this.categories.forEach((category) => {
-      this.options.push(category.name);
+      this.options.push(category.text[this.$i18n.locale]);
     });
 
 

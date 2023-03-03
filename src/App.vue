@@ -7,6 +7,7 @@ import { defineComponent } from "vue";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
+
 const app = createApp({});
 
 const pinia = createPinia();
@@ -16,3 +17,10 @@ export default defineComponent({
   name: "App",
 });
 </script>
+
+<style>
+.title {
+  text-align: center;
+  font-size: 2em;
+}
+</style>
