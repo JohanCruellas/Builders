@@ -1,14 +1,5 @@
 <template>
     <q-layout view="hHh lpR lFf">
-        <q-header elevated class="bg-primary text-white">
-            <q-toolbar>
-                <q-btn dense flat round icon="menu" />
-                <q-toolbar-title>
-                    Doc Builder
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-header>
-
         <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
             <q-item @click="openSidePanelList(indicators)">
                 <q-item-section avatar class="iconWrapper">

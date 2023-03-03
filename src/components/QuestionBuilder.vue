@@ -34,10 +34,6 @@
         </template>
       </q-input>
     </q-item>
-    <!-- <div class="answerAddBtnWrapper">
-            <q-btn push class="answerAddBtn" color="primary" size="sm" rounded icon="add"
-              @click="addAnswer(questionIndex)" />
-          </div> -->
   </q-expansion-item>
   <q-item :inset-level="1.25">
     <q-input class="cardInput" v-model="newQuestionText" lazy-rules :placeholder="'Add Question'" :dense="true"
@@ -48,8 +44,6 @@
     </q-input>
 
   </q-item>
-
-
   <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
@@ -190,8 +184,8 @@ export default defineComponent({
     addQuestion() {
       this.questions.push(new Question(this.newQuestionText));
       this.newQuestionText = "";
-      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-      // console.log(questionsTemplate.categories)
+      // templateStore.templateQuestions.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
+      // console.log(templateQuestions.categories)
     },
     addAnswer(questionIndex) {
       this.questions[questionIndex].options.push(new Answer(this.newAnswerText))

@@ -149,7 +149,7 @@ export const useTemplateStore = defineStore("templateStore", {
         ],
         color: "#F8CBAD",
       },
-      questionsTemplate: {
+      templateQuestions: {
         categories: [
           {
             name: "Gourvernance",
@@ -200,6 +200,9 @@ export const useTemplateStore = defineStore("templateStore", {
           },
         ],
       },
+      templateAxis: {
+        categories: []
+      }
     };
   },
 });

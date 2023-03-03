@@ -5,7 +5,6 @@
     <q-btn @click="goRoute('Indicator')">Indicator Builder</q-btn>
     <q-btn @click="goRoute('Document')">Document Builder</q-btn>
     <q-btn @click="goRoute('Axis')">Axis Builder</q-btn>
-    <q-btn @click="log()">Axis Builder</q-btn>
   </q-page>
 </template>
 
@@ -33,9 +32,6 @@ export default defineComponent({
     // IndicatorBuilder,
   },
   methods: {
-    log() {
-      console.log(this.$APP_NAME)
-    },
     goRoute(route) {
       switch (route) {
         case 'SourceData':

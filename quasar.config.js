@@ -197,5 +197,8 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     },
+    configureWebpack: {
+      devtool: 'source-map'
+    }
   };
 });

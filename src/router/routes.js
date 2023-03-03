@@ -4,11 +4,11 @@ const routes = [
     path: '/builders',
     component: () => import('layouts/BuilderLayout.vue'),
     children: [
-      {path : 'Document', component: ()=> import('pages/DocumentBuilderPage.vue')},
-      {path : 'Indicator', component: ()=> import('pages/IndicatorBuilderPage.vue')},
-      {path : 'DataSource', component: ()=> import('pages/SourceDataBuilderPage.vue')},
-      {path : 'Question', component: ()=> import('pages/QuestionBuilderPage.vue')},
-      {path : 'Axis', component: ()=> import('pages/AxisBuilderPage.vue')}
+      {path : 'Document', name: "DocBuilder", component: ()=> import('pages/DocumentBuilderPage.vue')},
+      {path : 'Indicator', name: "IndicatorBuilder", component: ()=> import('pages/IndicatorBuilderPage.vue')},
+      {path : 'DataSource', name: "DataSourceBuilder", component: ()=> import('pages/SourceDataBuilderPage.vue')},
+      {path : 'Question', name: "QuestionBuilder", component: ()=> import('pages/QuestionBuilderPage.vue')},
+      {path : 'Axis', name: "AxisBuilder", component: ()=> import('pages/AxisBuilderPage.vue')}
     ]
   },
   {
