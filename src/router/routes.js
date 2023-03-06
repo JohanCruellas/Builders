@@ -8,7 +8,6 @@ const routes = [
       {path : 'Indicator', name: "IndicatorBuilder", component: ()=> import('pages/IndicatorBuilderPage.vue')},
       {path : 'DataSource', name: "DataSourceBuilder", component: ()=> import('pages/SourceDataBuilderPage.vue')},
       {path : 'Question', name: "QuestionBuilder", component: ()=> import('pages/QuestionBuilderPage.vue')},
-      {path : 'Axis', name: "AxisBuilder", component: ()=> import('pages/AxisBuilderPage.vue')}
     ]
   },
   {
@@ -17,6 +16,13 @@ const routes = [
     children: [
       {path: '', component: () => import('pages/IndexPage.vue') },
     ] 
+  },
+  {
+    path: '/account',
+    component: () => import('layouts/MainLayout.vue'),
+    children : [
+      {path: 'userAccount', name: "userAccount", component: () => import('pages/AccountPage.vue')},
+    ]
   },
   // Always leave this as last one,
   // but you can also remove it

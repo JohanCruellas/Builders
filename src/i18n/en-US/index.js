@@ -4,6 +4,9 @@ export default {
     modifyBtn: "Modify",
     closeBtn : "Close",
     sourceDataSelect: "Select a category",
+    ratio: "Ratio",
+    type: "Type",
+    tooltip: 'Tooltip',
 
     // indicatorBuilder
     indicatorListTitle: "Indicator list",
@@ -16,7 +19,6 @@ export default {
     indicatorTypeInput: "Indicator type",
     indicatorFormulaInput: "Indicator formula",
     percent: "Percent",
-    ratio: "Ratio",
     rawValue: "Raw value",
     sourceData: "Source data",
 
@@ -30,6 +32,10 @@ export default {
     indicatorTab: "Indicators",
     questionTab: "Questions",
     documentTab: "Documents",
+    lang: "Language",
+    accountSettings: "Settings",
+    account: "Account",
+    logout: "Logout",
 
     // TranslateModal
 
@@ -39,5 +45,21 @@ export default {
     sourceDataAddButton: "Add new source data",
     sourceDataNameInput: "Source data name",
     sourceDataTooltipInput: "Source data tooltip",
+
+    // BuilderLayout
+    axis: 'Axis',
+    stake:'Stake',
+    noAxis: 'No axis added yet',
+    axisAddBtn: 'Add an axis',
+    stakeAddBtn: 'Add a stake',
+
+    // QuestionBuilder
+    question: 'Question',
+    answer: 'Answer',
+    addQuestion: 'Add a question',
+    addAnswer: 'Add an answer',
+    questionEditing: 'Editing question',
+    openEnded: 'Open ended',
+
     
 }

@@ -1,19 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-select
-      v-model="lang"
-      :options="langOptions"
-      label="Quasar Language"
-      filled
-      dense
-      borderless
-      emit-value
-      map-options
-      options-dense
-      style="min-width: 150px"
-      class="language fixed-right"
-    />
       <router-view />
     </q-page-container>
   </q-layout>
