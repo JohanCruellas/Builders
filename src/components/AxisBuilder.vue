@@ -49,12 +49,12 @@ export default defineComponent({
     name: "AxisBuilder",
     computed: {
         tabBgColor() {
-            return templateStore.templateQuestions.categories[this.tabIndex].color;
+            return templateStore.questionsTemplate.categories[this.tabIndex].color;
         }
     },
     data() {
         return {
-            categories: templateStore.templateQuestions.categories,
+            categories: templateStore.questionsTemplate.categories,
             tabIndex: 0,
             JSONData: "",
             treeNodes: [
@@ -70,12 +70,12 @@ export default defineComponent({
 
         },
         toJSON() {
-            templateStore.templateQuestions.categories.forEach((category) => {
+            templateStore.questionsTemplate.categories.forEach((category) => {
                 category.questions.forEach((question) => {
                     delete question.isShown;
                 })
             })
-            this.JSONData = JSON.stringify(templateStore.templateQuestions, null, 2)
+            this.JSONData = JSON.stringify(templateStore.questionsTemplate, null, 2)
         }
     },
 

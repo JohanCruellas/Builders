@@ -184,8 +184,8 @@ export default defineComponent({
     addQuestion() {
       this.questions.push(new Question(this.newQuestionText));
       this.newQuestionText = "";
-      // templateStore.templateQuestions.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-      // console.log(templateQuestions.categories)
+      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
+      // console.log(questionsTemplate.categories)
     },
     addAnswer(questionIndex) {
       this.questions[questionIndex].options.push(new Answer(this.newAnswerText))

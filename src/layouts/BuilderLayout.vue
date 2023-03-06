@@ -16,8 +16,6 @@
         <q-route-tab to="/builders/Question" :label="$t('questionTab')" />
         <q-route-tab to="/builders/Document" :label="$t('documentTab')" />
       </q-tabs>
-
-
     </q-header>
 
     <q-drawer show-if-above v-model="left" side="left" bordered>
@@ -75,7 +73,7 @@ export default defineComponent({
         { value: "enUS", label: "English" },
         { value: "frFR", label: "Français" },
       ],
-      treeNodes: templateStore.templateAxis.categories,
+      treeNodes: templateStore.axisTemplate.categories,
       selectedNodes: []
     };
   },

@@ -43,13 +43,13 @@ import { defineComponent } from "vue";
 import QuestionBuilder from './QuestionBuilder.vue';
 
 const templateStore = useTemplateStore()
-// const { templateQuestions } = storeToRefs(templateStore)
+// const { questionsTemplate } = storeToRefs(templateStore)
 
 export default defineComponent({
     name: "QuestionCategories",
     computed: {
         tabBgColor() {
-            return templateStore.templateQuestions.categories[this.tabIndex].color;
+            return templateStore.questionsTemplate.categories[this.tabIndex].color;
         }
     },
     methods: {
@@ -60,17 +60,17 @@ export default defineComponent({
 
         },
         toJSON() {
-            templateStore.templateQuestions.categories.forEach((category) => {
+            templateStore.questionsTemplate.categories.forEach((category) => {
                 category.questions.forEach((question) => {
                     delete question.isShown;
                 })
             })
-            this.JSONData = JSON.stringify(templateStore.templateQuestions, null, 2)
+            this.JSONData = JSON.stringify(templateStore.questionsTemplate, null, 2)
         }
     },
     data() {
         return {
-            categories: templateStore.templateAxis.categories,
+            categories: templateStore.axisTemplate.categories,
             tabIndex: 0,
             JSONData: ""
         };
