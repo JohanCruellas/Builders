@@ -2,16 +2,16 @@
     <q-card v-for="(axis, axisIndex) in axisTemplate" :key="axisIndex" :name="axisIndex" class="catCard"
         :style="{ backgroundColor: axis.color }">
         <q-card-section>
-            <div class="text-h6">{{ axis.label }}</div>
+            <div class="text-h6">{{ axis.text }}</div>
         </q-card-section>
-        <q-card class="subcategoryCard" v-for="(stake, stakeIndex) in axis.stakes" :key="stakeIndex">
+        <q-card class="subcategoryCard" v-for="(stake, stakeIndex) in axis.children" :key="stakeIndex">
             <q-expansion-item expand-icon-toggle switch-toggle-side>
                 <template v-slot:header>
                     <q-item class="cardInput" dense>
-                        <q-item-section>{{ stake.label }}</q-item-section>
+                        <q-item-section>{{ stake.text }}</q-item-section>
                     </q-item>
                 </template>
-                <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="getStake(stake)">
+                <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="stake">
                 </QuestionBuilder>
                 <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings"></SourceDataBuilder>
             </q-expansion-item>
@@ -35,50 +35,14 @@ export default defineComponent({
     name: "AxisSetter",
     props: ['selectedNodes'],
     methods: {
-        getParentAxisLabel() {
-            let axisArray = [];
-            console.log(this.currentRoute)
-            // this.axis.forEach((node) => {
-            //     axisArray.push(templateStore.axisTemplate.categories.find(category => category.id === node))
-            // });
-            return axisArray;
-        },
         bgColor(color) {
             console.log(color)
             return color;
-        },
-        getStake(stake) {
-            let parentAxis = templateStore.templateQuestions.categories.find((axis) => axis.name == templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId).label)
-            console.log(parentAxis)
-            if (parentAxis) {
-                let parentStake = parentAxis.children.find((child) => child.name === stake.label)
-                if (parentStake) {
-                    return parentStake;
-                }
-            }
-            else {
-                let newAxis = {
-                    name: templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId).label,
-                    children: [
-                        {
-                            name: stake.label,
-                            questions: []
-                        }
-                    ]
-                }
-                templateStore.templateQuestions.categories.splice(
-                    templateStore.templateAxis.categories.indexOf(templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId))
-                    , 0
-                    , newAxis
-                )
-                return newAxis.children[templateStore.templateAxis.categories.indexOf(templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId))];
-                //TODO gerer l'ajout de question
-            }
         }
     },
     data() {
         return {
-            axisTemplate: templateStore.templateAxis.categories,
+            axisTemplate: templateStore.questionsTemplate.categories,
             tabIndex: 0,
             JSONData: ""
         };

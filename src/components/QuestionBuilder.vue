@@ -69,10 +69,10 @@
     <q-item>
       <q-input
         class="cardInput"
-        v-model="newAnswerText"
         lazy-rules
         :placeholder="$t('addAnswer')"
         :dense="true"
+        v-model="newAnswerTexts[questionIndex]"
         @change="addAnswer(questionIndex)"
       >
         <template v-slot:before>
@@ -192,7 +192,7 @@ export default defineComponent({
       questionDialogContentIndex: null,
       ratioSlider: 1,
       newQuestionText: "",
-      newAnswerText: "",
+      newAnswerTexts: [],
       questionTypeOptions: ["QCM", "QCU"],
     };
   },
@@ -232,7 +232,7 @@ export default defineComponent({
   },
   methods: {
     consoleLog() {
-      console.log(this.questions);
+      console.log(this.newAnswerTexts);
     },
     questionTypeChanged(questionType, questionIndex) {
       if (questionType == "QCU") {
@@ -256,18 +256,18 @@ export default defineComponent({
     addQuestion() {
       this.questions.push(new Question(this.newQuestionText));
       this.newQuestionText = "";
-      // templateStore.templateQuestions.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-      // console.log(templateQuestions.categories)
+      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
+      // console.log(questionsTemplate.categories)
     },
     addAnswer(questionIndex) {
       this.questions[questionIndex].options.push(
-        new Answer(this.newAnswerText)
+        new Answer(this.newAnswerTexts[questionIndex])
       );
       let nbAnswers = this.questions[questionIndex].options.length;
       this.questions[questionIndex].options.forEach((answer, i) => {
         this.setDefaultRatio(answer, i, nbAnswers);
       });
-      this.newAnswerText = "";
+      this.newAnswerTexts[questionIndex] = "";
     },
     removeQuestion(questionIndex) {
       this.questions.splice(questionIndex, 1);
@@ -290,9 +290,9 @@ export default defineComponent({
   },
   mounted() {
     //TODO Get default values
-    // let stakeQuestions = templateStore.templateQuestions.categories.find(category => category.name == this.stakeData.name).questions) 
+    // let stakeQuestions = templateStore.questionsTemplate.categories.find(category => category.name == this.stakeData.name).questions) 
     //get parent stake
-    console.log(this.stakeData)
+    // console.log(this.stakeData)
   }
 })
 </script>
