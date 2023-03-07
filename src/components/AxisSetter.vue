@@ -11,10 +11,9 @@
                         <q-item-section>{{ stake.label }}</q-item-section>
                     </q-item>
                 </template>
-                <QuestionBuilder v-if="currentRoute === 'QuestionBuilder'" :stake-data="getStake(stake)">
+                <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="getStake(stake)">
                 </QuestionBuilder>
-                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" :categoryIndexProp="categoryIndex"
-                    @currentDatasSettings="showDataSettings"></SourceDataBuilder>
+                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings"></SourceDataBuilder>
             </q-expansion-item>
         </q-card>
     </q-card>
