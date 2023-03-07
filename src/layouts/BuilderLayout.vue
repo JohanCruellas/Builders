@@ -62,30 +62,33 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer show-if-above v-model="left" side="left" bordered> <q-tree :nodes="treeNodesComputed" node-key="id"
-        v-model:ticked="selectedNodes" @update:ticked="log(event)" tick-strategy="leaf" :no-nodes-label="$t('noAxis')">
+    <q-drawer show-if-above v-model="left" side="left" bordered>
+      <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes"
+        tick-strategy="leaf" :no-nodes-label="$t('noAxis')">
         <template v-slot:default-header="prop">
           <q-input v-if="prop.node.parentId" lazy-rules
             :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
             v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label"
             dense @click.stop>
-            <template v-slot:append>
-              <q-icon name="close" class="cursor-pointer" />
-            </template>
+            <!-- <template v-slot:append>
+              <q-icon name="close" class="cursor-pointer" @click="delete(prop.node, 'stake')"/>
+            </template> -->
           </q-input>
-          <q-input v-else lazy-rules :placeholder="
-            $t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)
-          " v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" dense @click.stop>
-            <template v-slot:append>
-              <q-icon name="close" class="cursor-pointer" />
-            </template>
+          <q-input v-else lazy-rules 
+          :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)" 
+          v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" 
+          dense @click.stop>
+            <!-- <template v-slot:append>
+            </template> -->
           </q-input>
+          <q-icon name="close" size="xs" class="cursor-pointer" @click.stop @click="deleteNode(prop.node)"></q-icon>
         </template>
         <template v-slot:header-add="prop">
           <q-btn @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
         </template>
       </q-tree>
       <q-btn @click="addAxis()">{{ $t("axisAddBtn") }}</q-btn>
+      <q-btn @click="saveToTemplate()">Save</q-btn>
       <q-btn @click="log()">Log</q-btn>
     </q-drawer>
 
@@ -100,7 +103,7 @@ import { defineComponent, ref } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
 import { Axis } from "src/classes/Axis.js";
 import { Stake } from "src/classes/stake.js";
-
+import { AxisTemplateSave } from "src/helpers/TemplateHelper.js"
 
 const templateStore = useTemplateStore();
 
@@ -148,6 +151,24 @@ export default defineComponent({
     addAxis() {
       this.treeNodes.push(new Axis());
     },
+    deleteNode(node) {
+      if (node.parentId) {
+        this.treeNodes
+          .find((axis) => {
+            return axis.id === node.parentId;
+          })
+          .stakes.splice(
+            this.treeNodes
+              .find((axis) => {
+                return axis.id === node.parentId;
+              })
+              .stakes.indexOf(node),
+            1
+          );
+      } else {
+        this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
+      }
+    },
 
     goToAccount(route) {
       switch (route) {
@@ -164,7 +185,10 @@ export default defineComponent({
           this.$router.push("../account/userAccount/settings");
           break
       }
-
+    },
+    saveToTemplate() {
+      templateStore.axisTemplate.categories = this.treeNodes;
+      AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
     },
   },
 });
