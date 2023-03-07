@@ -81,7 +81,8 @@
             <q-item-label>Type</q-item-label>
           </q-item-section>
           <q-item-section avatar>
-            <q-select v-model="questionType" :options="questionTypeOptions" @update:model-value="questionTypeChanged(questionType, this.questionDialogContentIndex)"/>
+            <q-select v-model="questionType" :options="questionTypeOptions"
+              @update:model-value="questionTypeChanged(questionType, this.questionDialogContentIndex)" />
           </q-item-section>
         </q-item>
         <q-item tag="label" v-ripple>
@@ -101,21 +102,23 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <q-btn @click="consoleLog">Log</q-btn>
 </template>
 
 <script>
 import { Question } from 'src/classes/question';
 import { defineComponent } from 'vue';
 import { Answer } from '../classes/answer.js'
+import { useTemplateStore } from "src/stores/templateStore";
 
-// const templateStore = useTemplateStore()
+const templateStore = useTemplateStore()
 
 export default defineComponent({
   name: "QuestionBuilder",
-  props: ['categoryData'],
+  props: ['stakeData'],
   data() {
     return {
-      questions: this.categoryData.questions,
+      questions: this.stakeData.questions,
       isQuestionDialogOpen: false,
       questionDialogContentIndex: null,
       ratioSlider: 1,
@@ -163,10 +166,10 @@ export default defineComponent({
       console.log(this.questions)
     },
     questionTypeChanged(questionType, questionIndex) {
-      if(questionType == "QCU") {
-      this.questions[questionIndex].options[0].ratio = 0;
-      this.questions[questionIndex].options.at(-1).ratio = 100;
-    }
+      if (questionType == "QCU") {
+        this.questions[questionIndex].options[0].ratio = 0;
+        this.questions[questionIndex].options.at(-1).ratio = 100;
+      }
     },
     setDefaultRatio(answer, index, nbAnswers) {
       let defaultRatio = Math.round(100 / (nbAnswers - 1))
@@ -184,8 +187,8 @@ export default defineComponent({
     addQuestion() {
       this.questions.push(new Question(this.newQuestionText));
       this.newQuestionText = "";
-      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-      // console.log(questionsTemplate.categories)
+      // templateStore.templateQuestions.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
+      // console.log(templateQuestions.categories)
     },
     addAnswer(questionIndex) {
       this.questions[questionIndex].options.push(new Answer(this.newAnswerText))
@@ -216,6 +219,9 @@ export default defineComponent({
   },
   mounted() {
     //TODO Get default values
+    // let stakeQuestions = templateStore.templateQuestions.categories.find(category => category.name == this.stakeData.name).questions) 
+    //get parent stake
+    console.log(this.stakeData)
   }
 })
 </script>

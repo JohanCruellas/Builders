@@ -1,9 +1,9 @@
-<template>
+<!-- <template>
   <label class="title">{{ $t("sourceDataListTitle") }}</label>
   <div class="q-pa-md container bg-grey-2">
     <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
       <div class="bg-category" :style="{ 'background-color': category.color }">
-        <div class="category-title">{{$getTrad(category.text, $i18n.locale)}}</div>
+        <div class="category-title">{{ $getTrad(category.text, $i18n.locale) }}</div>
         <q-card class="card">
           <q-scroll-area class="scroll-area">
             <SourceDataBuilder :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings">
@@ -14,51 +14,16 @@
     </div>
   </div>
   <div style="width: 100%" class="flex flex-center q-ma-md">
-    <q-btn
-      :label="$t('sourceDataAddButton')"
-      @click="openAddModal()"
-      class="q-ma-md"
-    />
-    <!-- <q-btn label="JSONIput" @click="toJSON()" class="q-ma-md" /> -->
+    <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
   </div>
-
-  <!-- <q-card dark bordered class="bg-grey-9 my-card">
-    <q-card-section>
-      <div class="text-h6">JSON Output</div>
-    </q-card-section>
-
-    <q-separator dark inset />
-
-    <q-card-section>
-      <pre>{{ JSONData }}</pre>
-    </q-card-section>
-  </q-card> -->
-
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
           <q-input v-model="dataText" :label="$t('sourceDataNameInput')">
-            <!-- <template v-slot:after>
-              <q-icon
-                v-if="isModified"
-                name="translate"
-                class="cursor-pointer"
-                @click="
-                  this.$openModal({
-                    index: this.currentIndicatorIndex,
-                    type: 'indicators',
-                    input: 'text',
-                  })
-                "
-              ></q-icon>
-            </template>-->
-          </q-input> 
-
+          </q-input>
           <q-input v-model="tooltip" :label="$t('sourceDataTooltipInput')" />
-
           <q-select v-model="select" :label="$t('sourceDataSelect')" :options="options"></q-select>
-
           <div class="flex flex-center">
             <q-btn v-if="isEdited" :label="$t('modifyBtn')" type="submit" color="primary" @click="saveEdit"></q-btn>
             <q-btn v-else :label="$t('saveBtn')" type="submit" color="primary" @click="addData" />
@@ -158,7 +123,7 @@ export default defineComponent({
       this.isEdited = event.isEdited;
     },
 
-    
+
     toJSON() {
       this.JSONData = JSON.stringify(templateStore.categories, null, 2);
     },
@@ -219,4 +184,4 @@ export default defineComponent({
   flex-direction: column;
   row-gap: 1em;
 }
-</style>
+</style> -->

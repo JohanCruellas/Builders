@@ -21,7 +21,7 @@
     <q-drawer show-if-above v-model="left" side="left" bordered>
       <!-- drawer content -->
       <div class="q-pa-md q-gutter-sm">
-        <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes" @update:ticked="log(event)" tick-strategy="leaf">
+        <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes" tick-strategy="leaf">
           <template v-slot:default-header="prop">
             <q-input v-if="prop.node.parentId" lazy-rules
               :placeholder="'Stake ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find(stake => stake.id === prop.node.id)) + 1)" 
@@ -50,7 +50,7 @@
     </q-drawer>
 
     <q-page-container class="q-my-md">
-      <router-view :selectedNodes="SelectedNodes"/>
+      <router-view :selected-nodes="this.selectedNodes"></router-view>
     </q-page-container>
   </q-layout>
 </template>
@@ -73,7 +73,7 @@ export default defineComponent({
         { value: "enUS", label: "English" },
         { value: "frFR", label: "Français" },
       ],
-      treeNodes: templateStore.axisTemplate.categories,
+      treeNodes: templateStore.templateAxis.categories,
       selectedNodes: []
     };
   },
@@ -85,11 +85,8 @@ export default defineComponent({
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
       computedTree.forEach(
         (axis) => {
-          if(!axis.children) {
-            axis.children = [...axis.stakes,{ label: "Add node", header: "add", parentId: axis.id, tickable: false, noTick: true }]
-          }
-          else if(axis.children.at(-1).header !== "add") {
-            axis.children = [...axis.stakes, { label: "Add node", header: "add", parentId: axis.id, tickable: false, noTick: true}]
+          if(!axis.children || axis.children.at(-1).header !== "add"){
+            axis.children = [...axis.stakes,{ label: "Add node", header: "add", parentId: axis.id, noTick: true, tickable: false, tickStrategy :'none'}]
           }
         }
       )
@@ -98,8 +95,8 @@ export default defineComponent({
   },
   methods: {
     log(event) {
-      console.log(event)
       console.log(this.selectedNodes)
+      console.log(this.treeNodes)
     },
     getParentNode(node) {
       return this.treeNodes.find(axis => {return axis.id === node.parentId})

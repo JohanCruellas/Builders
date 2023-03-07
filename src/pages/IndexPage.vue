@@ -4,7 +4,6 @@
     <q-btn @click="goRoute('Question')">Question Builder</q-btn>
     <q-btn @click="goRoute('Indicator')">Indicator Builder</q-btn>
     <q-btn @click="goRoute('Document')">Document Builder</q-btn>
-    <q-btn @click="goRoute('Axis')">Axis Builder</q-btn>
   </q-page>
 </template>
 
@@ -27,7 +26,7 @@ export default defineComponent({
   },
   components: {
     // SourceDataCategories,
-    // QuestionCategories,
+    // AxisSetter,
     // IndicatorBuilder,
   },
   methods: {
