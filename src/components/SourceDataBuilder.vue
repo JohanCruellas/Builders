@@ -6,7 +6,7 @@
           <q-icon
           name="settings"
           class="cursor-pointer"
-          @click="openUpdateModal(this.categoryIndexProp, dataIndex)"
+          @click="openUpdateModal(data, dataIndex)"
         ></q-icon>
         </q-item-section>
         <q-item-section avatar>
@@ -28,28 +28,80 @@ const templateStore = useTemplateStore();
 
 export default defineComponent({
   name: "sourceDataBuilder",
-  props: ["categoryIndexProp"],
+  props: ['stakeData'],
   data() {
     return {
-      categoryDatas: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].datas,
-      categoryText: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].text,
+      // categoryDatas: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].datas,
+      // categoryText: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].text,
+      categoryDatas: [
+              {
+                data_key: "data_key_3",
+
+                info: {
+                  frFR: "test",
+                  enUS: "test",
+                },
+                text: {
+                  frFR: "Effectif total ",
+                  enUS: "Total headcount",
+                },
+              },
+              {
+                data_key: "data_key_4",
+
+                info: "",
+                text: {
+                  frFR: "CDI",
+                  enUS: "Permanent contract",
+                },
+              },
+              {
+                data_key: "data_key_5",
+
+                info: "",
+                text: {
+                  frFR: "Nombre d'Accidents du travail",
+                  enUS: "Number of work-related accidents",
+                },
+              },
+              {
+                data_key: "data_key_6",
+
+                info: "",
+                text: {
+                  frFR: "Chiffre d'affaires",
+                  enUS: "Turnover",
+                },
+              },
+            ]
     };
   },
+  // emits: ['currentDatasSettings'],
+    // setup(props, context) {
+    //     context.emit('currentDatasSettings')
+    // },
   methods: {
     removeData(dataIndex) {
       this.categoryDatas.splice(dataIndex, 1);
     },
-    openUpdateModal(categoryIndex, dataIndex) {
-      let currentDatasSettings = {
+    openUpdateModal(data,dataIndex) {
+      let currentDatasSettings =
+      {
         persistent: true,
         isEdited: true,
-        dataText: this.categoryDatas[dataIndex].text[this.$i18n.locale],
-        tooltip: this.categoryDatas[dataIndex].info[this.$i18n.locale],
-        select: this.categoryText[this.$i18n.locale],
-        stockedIndexes: [categoryIndex, dataIndex],
+        dataText: data.text[this.$i18n.locale],
+        tooltip: data.info[this.$i18n.locale],
+        axisIndex: 4, // mockup data, récuprer l'index de l'axe depuis prop stake-data
+        index: dataIndex,
       };
-      this.$parent.$emit("currentDatasSettings", currentDatasSettings);
+      this.$emit("currentDatasSettings", currentDatasSettings);
     },
   },
+  watch: {
+    stakeData() {
+      console.log(this.stakeData)
+    }
+  },
+
 });
 </script>

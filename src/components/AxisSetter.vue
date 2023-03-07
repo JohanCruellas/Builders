@@ -13,7 +13,7 @@
                 </template>
                 <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="getStake(stake)">
                 </QuestionBuilder>
-                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings"></SourceDataBuilder>
+                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" @currentDatasSettings="parentEmit"></SourceDataBuilder> 
             </q-expansion-item>
         </q-card>
     </q-card>
@@ -48,8 +48,8 @@ export default defineComponent({
             return color;
         },
         getStake(stake) {
-            let parentAxis = templateStore.templateQuestions.categories.find((axis) => axis.name == templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId).label)
-            console.log(parentAxis)
+            let parentAxis = templateStore.questionsTemplate.categories.find((axis) => axis.name == templateStore.axisTemplate.categories.find((axis) => axis.id === stake.parentId).label)
+            // console.log(parentAxis)
             if (parentAxis) {
                 let parentStake = parentAxis.children.find((child) => child.name === stake.label)
                 if (parentStake) {
@@ -58,7 +58,7 @@ export default defineComponent({
             }
             else {
                 let newAxis = {
-                    name: templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId).label,
+                    name: templateStore.axisTemplate.categories.find((axis) => axis.id === stake.parentId).label,
                     children: [
                         {
                             name: stake.label,
@@ -66,23 +66,34 @@ export default defineComponent({
                         }
                     ]
                 }
-                templateStore.templateQuestions.categories.splice(
-                    templateStore.templateAxis.categories.indexOf(templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId))
+                // console.log(newAxis)
+                templateStore.questionsTemplate.categories.splice(
+                    templateStore.axisTemplate.categories.indexOf(templateStore.axisTemplate.categories.find((axis) => axis.id === stake.parentId))
                     , 0
                     , newAxis
                 )
-                return newAxis.children[templateStore.templateAxis.categories.indexOf(templateStore.templateAxis.categories.find((axis) => axis.id === stake.parentId))];
+                return newAxis.children[templateStore.axisTemplate.categories.indexOf(templateStore.axisTemplate.categories.find((axis) => axis.id === stake.parentId))];
                 //TODO gerer l'ajout de question
             }
+        },
+        // emit du parent au grand parent, pas très esthétique
+        parentEmit(event) {
+            event.select = this.sourceDatatemplate[event.axisIndex].text[this.$store.lang];
+            this.$emit('currentDatasSettings', event)
         }
     },
     data() {
         return {
-            axisTemplate: templateStore.templateAxis.categories,
+            axisTemplate: templateStore.axisTemplate.categories,
+            sourceDatatemplate: templateStore.sourceDataTemplate.categories,
             tabIndex: 0,
             JSONData: ""
         };
     },
+    // emits: ['currentDatasSettings'],
+    // setup(props, context) {
+    //     context.emit('currentDatasSettings')
+    // },
     computed: {
         selectedAxis() {
             return this.selectedNodes
@@ -95,8 +106,7 @@ export default defineComponent({
         QuestionBuilder,
         SourceDataBuilder
     },
-    mounted() {
-    }
+
 })
 </script>
 

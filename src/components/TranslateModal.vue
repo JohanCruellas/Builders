@@ -43,22 +43,24 @@ export default defineComponent({
       handler: function() {
         switch (this.$store.type) {
         case 'indicators':
-          this.store = templateStore.indicatorsTemplate.indicators;
+          this.store = templateStore.indicatorsTemplate.indicators[this.$store.axisIndex];
           break;
         case 'sourceData':
-          this.store = templateStore.sourceDataTemplate.categories;
+          this.store = templateStore.sourceDataTemplate.categories[this.$store.axisIndex];
+          console.log(this.store)
           break;
       }
 
       switch (this.$store.input) {
         case 'text':
-          this.translations = this.store[this.$store.index].text;
+          this.translations = this.store.datas[this.$store.index].text;
           break;
         case 'tooltip':
-          this.translations = this.store[this.$store.index].info;
+          this.translations = this.store.datas[this.$store.index].info;
+          console.log(this.store.datas[this.$store.index])
           break;
           case 'select':
-          this.translations = this.store[this.$store.index].type;
+          this.translations = this.store.type;
           break;
       }
       

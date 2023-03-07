@@ -6,6 +6,8 @@ export const useGlobalStore = defineStore("globalStore", {
       lang: 'frFR',
       modal: false,
       index: '',
+      axisIndex: '',
+      info: '',
       type: '',
       input: '',
       user: {

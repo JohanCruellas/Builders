@@ -1,15 +1,38 @@
 <template>
-  <AxisSetter></AxisSetter>
+  <AxisSetter @currentDatasSettings="showDataSettings"></AxisSetter>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
   </div>
+  <!-- modale qui s'ouvre quand icone du compo SourceDataBuilder est cliquée -->
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
         <q-form class="form">
           <q-input v-model="dataText" :label="$t('sourceDataNameInput')">
+            <template v-slot:after>
+              <q-icon v-if="isEdited" name="translate" class="cursor-pointer" @click="
+                this.$openModal({
+                  index: this.currentIndicatorIndex,
+                  axisIndex: this.axisIndex,
+                  info: this.tooltip,
+                  type: 'sourceData',
+                  input: 'text',
+                })">
+              </q-icon>
+            </template>
           </q-input>
-          <q-input v-model="tooltip" :label="$t('sourceDataTooltipInput')" />
+          <q-input v-model="tooltip" :label="$t('sourceDataTooltipInput')">
+            <template v-slot:after>
+              <q-icon v-if="isEdited" name="translate" class="cursor-pointer" @click="
+                this.$openModal({
+                  index: this.currentIndicatorIndex,
+                  axisIndex: this.axisIndex,
+                  info: this.tooltip,
+                  type: 'sourceData',
+                  input: 'tooltip',
+                })
+              "></q-icon>
+            </template></q-input>
           <q-select v-model="select" :label="$t('sourceDataSelect')" :options="options"></q-select>
           <div class="flex flex-center">
             <q-btn v-if="isEdited" :label="$t('modifyBtn')" type="submit" color="primary" @click="saveEdit"></q-btn>
@@ -22,6 +45,8 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <TranslateModal></TranslateModal>
+
 </template>
 
 <script>
@@ -29,6 +54,8 @@ import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
 import { SourceData } from "src/classes/source_data";
 import AxisSetter from "src/components/AxisSetter.vue";
+import TranslateModal from "src/components/TranslateModal.vue";
+
 
 
 const templateStore = useTemplateStore();
@@ -43,9 +70,11 @@ export default defineComponent({
       dataText: "",
       tooltip: "",
       select: "",
+      axisIndex: '',
+      currentIndicatorIndex: '',
       options: [],
       stockedIndexes: [],
-      isEdited: false,
+      isEdited: false, // = isModified
       JSONData: null,
     };
   },
@@ -106,14 +135,15 @@ export default defineComponent({
       this.dataText = event.dataText;
       this.tooltip = event.tooltip;
       this.select = event.select;
-      this.stockedIndexes = event.stockedIndexes;
       this.isEdited = event.isEdited;
+      this.currentIndicatorIndex = event.index;
+      this.axisIndex = event.axisIndex;
     },
 
 
-    toJSON() {
-      this.JSONData = JSON.stringify(templateStore.categories, null, 2);
-    },
+    // toJSON() {
+    //   this.JSONData = JSON.stringify(templateStore.categories, null, 2);
+    // },
   },
 
   mounted() {
@@ -125,7 +155,8 @@ export default defineComponent({
 
   },
   components: {
-    AxisSetter
+    AxisSetter,
+    TranslateModal
 },
 });
 </script>

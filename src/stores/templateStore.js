@@ -53,8 +53,8 @@ export const useTemplateStore = defineStore("templateStore", {
                 data_key: "data_key_3",
 
                 info: {
-                  frFR: "",
-                  enUS: "",
+                  frFR: "test",
+                  enUS: "test",
                 },
                 text: {
                   frFR: "Effectif total ",
@@ -98,7 +98,7 @@ export const useTemplateStore = defineStore("templateStore", {
               {
                 data_key: "data_key_7",
 
-                iinfo: {
+                info: {
                   frFR: "",
                   enUS: "",
                 },
@@ -260,7 +260,7 @@ export const useTemplateStore = defineStore("templateStore", {
         ],
         color: "#F8CBAD",
       },
-      templateQuestions: {
+      questionsTemplate: {
         categories: [
           {
             name: "Gouvernance",
@@ -311,7 +311,7 @@ export const useTemplateStore = defineStore("templateStore", {
           },
         ],
       },
-      templateAxis: {
+      axisTemplate: {
         categories: []
       }
     };

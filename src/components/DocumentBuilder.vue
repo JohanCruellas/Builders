@@ -102,7 +102,7 @@ export default defineComponent({
   computed: {
     sourceDatas() {
       let allDatas = [];
-      templateStore.templateDataSource.categories.forEach((category) => {
+      templateStore.sourceDataTemplate.categories.forEach((category) => {
         category.datas.forEach((data) =>
           allDatas.push(data, (data.color = category.color))
         );

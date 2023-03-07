@@ -25,7 +25,9 @@ export default boot(({app}) => {
   };
   app.config.globalProperties.$openModal = (object) => {
     app.config.globalProperties.$store.modal = true;
+    app.config.globalProperties.$store.axisIndex = object.axisIndex;
     app.config.globalProperties.$store.index = object.index;
+    app.config.globalProperties.$store.info = object.info;
     app.config.globalProperties.$store.type = object.type;
     app.config.globalProperties.$store.input = object.input;
   }

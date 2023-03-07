@@ -11,128 +11,67 @@
           <label class="title" v-else>{{ $t("indicatorAddTitle") }}</label>
           <q-input :label="$t('indicatorNameInput')" v-model="indicatorName">
             <template v-slot:after>
-              <q-icon
-                v-if="isModified"
-                name="translate"
-                class="cursor-pointer"
-                @click="
-                  this.$openModal({
-                    index: this.currentIndicatorIndex,
-                    type: 'indicators',
-                    input: 'text',
-                  })
-                "
-              ></q-icon>
+              <q-icon v-if="isModified" name="translate" class="cursor-pointer" @click="
+                this.$openModal({
+                  index: this.currentIndicatorIndex,
+                  type: 'indicators',
+                  input: 'text',
+                })
+              "></q-icon>
             </template>
           </q-input>
-          <q-input
-            :label="$t('indicatorTooltipInput')"
-            v-model="indicatorTooltip"
-          >
+          <q-input :label="$t('indicatorTooltipInput')" v-model="indicatorTooltip">
             <template v-slot:after>
-              <q-icon
-                v-if="isModified"
-                name="translate"
-                class="cursor-pointer"
-                @click="
-                  this.$openModal({
-                    index: this.currentIndicatorIndex,
-                    type: 'indicators',
-                    input: 'tooltip',
-                  })
-                "
-              ></q-icon>
+              <q-icon v-if="isModified" name="translate" class="cursor-pointer" @click="
+                this.$openModal({
+                  index: this.currentIndicatorIndex,
+                  type: 'indicators',
+                  input: 'tooltip',
+                })
+              "></q-icon>
             </template>
           </q-input>
-          <q-select
-            :label="$t('indicatorTypeInput')"
-            v-model="indicatorType"
-            :options="indicatorOptions"
-            ><template v-slot:after>
-              <q-icon
-                v-if="isModified"
-                name="translate"
-                class="cursor-pointer"
-                @click="
-                  this.$openModal({
-                    index: this.currentIndicatorIndex,
-                    type: 'indicators',
-                    input: 'select',
-                  })
-                "
-              ></q-icon> </template
-          ></q-select>
-          <q-input
-            :label="$t('indicatorFormulaInput')"
-            v-model="formula"
-          ></q-input>
+          <q-select :label="$t('indicatorTypeInput')" v-model="indicatorType" :options="indicatorOptions"><template
+              v-slot:after>
+              <q-icon v-if="isModified" name="translate" class="cursor-pointer" @click="
+                this.$openModal({
+                  index: this.currentIndicatorIndex,
+                  type: 'indicators',
+                  input: 'select',
+                })
+              "></q-icon> </template></q-select>
+          <q-input :label="$t('indicatorFormulaInput')" v-model="formula"></q-input>
 
-          <q-btn
-            :label="$t('modifyBtn')"
-            type="submit"
-            color="primary"
-            @click="modifyIndicator(indicatorIndex)"
-            v-if="isModified"
-          ></q-btn>
-          <q-btn
-            :label="$t('saveBtn')"
-            type="submit"
-            color="primary"
-            @click="addIndicator"
-            v-else
-          ></q-btn>
+          <q-btn :label="$t('modifyBtn')" type="submit" color="primary" @click="modifyIndicator(indicatorIndex)"
+            v-if="isModified"></q-btn>
+          <q-btn :label="$t('saveBtn')" type="submit" color="primary" @click="addIndicator" v-else></q-btn>
         </q-form>
       </q-card-section>
 
       <q-card-actions class="justify-end">
-        <q-btn
-          flat
-          :label="$t('closeBtn')"
-          float-right
-          @click="this.isShown = false"
-        />
+        <q-btn flat :label="$t('closeBtn')" float-right @click="this.isShown = false" />
       </q-card-actions>
     </q-card>
 
     <q-card class="indicatorBuilderWrapper">
       <label class="title q-my-md">{{ $t("indicatorListTitle") }}</label>
       <q-scroll-area class="indicatorScroll">
-        <q-input
-          :label="$t('indicatorInput')"
-          v-model="indicatorInput"
-          filled
-        ></q-input>
+        <q-input :label="$t('indicatorInput')" v-model="indicatorInput" filled></q-input>
         <q-list class="indicatorList">
-          <q-item
-            v-for="(indicator, indicatorIndex) in filteredIndicators"
-            :key="indicatorIndex"
-          >
+          <q-item v-for="(indicator, indicatorIndex) in filteredIndicators" :key="indicatorIndex">
             <q-item-section class="q-mr-md">{{
               $getTrad(indicator.text, $i18n.locale)
             }}</q-item-section>
             <q-item-section avatar>
-              <q-icon
-                name="settings"
-                class="cursor-pointer"
-                @click="openModifyIndicatorModal(indicatorIndex)"
-              ></q-icon>
+              <q-icon name="settings" class="cursor-pointer" @click="openModifyIndicatorModal(indicatorIndex)"></q-icon>
             </q-item-section>
             <q-item-section avatar>
-              <q-icon
-                name="close"
-                class="cursor-pointer"
-                @click="removeIndicator(indicatorIndex)"
-              ></q-icon>
+              <q-icon name="close" class="cursor-pointer" @click="removeIndicator(indicatorIndex)"></q-icon>
             </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
-      <q-btn
-        :label="$t('indicatorAddButton')"
-        color="primary"
-        @click="openAddIndicatorModal"
-        class="q-mt-lg"
-      ></q-btn>
+      <q-btn :label="$t('indicatorAddButton')" color="primary" @click="openAddIndicatorModal" class="q-mt-lg"></q-btn>
     </q-card>
   </div>
 

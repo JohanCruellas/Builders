@@ -109,7 +109,7 @@ export default defineComponent({
   data() {
     return {
       left: false,
-      treeNodes: templateStore.templateAxis.categories,
+      treeNodes: templateStore.axisTemplate.categories,
       selectedNodes: [],
     };
   },
