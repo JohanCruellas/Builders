@@ -19,17 +19,21 @@
               <div class="column">
                 <div class="text-h6 q-mb-md text-center">{{ $t("account") }}</div>
                 <div class="account">
-                  <div @click="goToAccountSettings()" class="accountOption">
-                    <q-icon name="manage_accounts" :label="$t('account')" />
-                    <q-label>{{ $t("accountSettings") }}</q-label>
+                  <div @click="goToAccount('profil')" class="accountOption">
+                    <q-icon name="account_circle"/>
+                    <label class="cursor-pointer">{{ $t('accountProfile') }}</label>
                   </div>
-                  <div @click="goToAccountSettings()" class="accountOption">
-                    <q-icon name="account_circle" :label="$t('account')" />
-                    <q-label>info perso</q-label>
+                  <div @click="goToAccount('password')" class="accountOption">
+                    <q-icon name="key"/>
+                    <label class="cursor-pointer">{{ $t('accountPassword') }}</label>
                   </div>
-                  <div @click="goToAccountSettings()" class="accountOption">
-                    <q-icon name="account_circle" :label="$t('account')" />
-                    <q-label> à déterminer</q-label>
+                  <div @click="goToAccount('notifications')" class="accountOption">
+                    <q-icon name="notifications"/>
+                    <label class="cursor-pointer"> {{ $t('accountNotifications') }}</label>
+                  </div>
+                  <div @click="goToAccount('settings')" class="accountOption">
+                    <q-icon name="manage_accounts"/>
+                    <label class="cursor-pointer">{{ $t("accountSettings") }}</label>
                   </div>
                 </div>
 
@@ -136,7 +140,7 @@ import { defineComponent, ref } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
 import { Axis } from "src/classes/Axis.js";
 import { Stake } from "src/classes/stake.js";
-import { useQuasar } from "quasar";
+
 
 const templateStore = useTemplateStore();
 
@@ -204,8 +208,22 @@ export default defineComponent({
       this.treeNodes.push(new Axis());
     },
 
-    goToAccountSettings() {
-      this.$router.push("../account/userAccount");
+    goToAccount(route) {
+      switch(route) {
+        case 'profil':
+          this.$router.push("../account/userAccount/profile");
+          break
+        case 'password':
+          this.$router.push("../account/userAccount/password");
+          break
+        case 'notifications':
+          this.$router.push("../account/userAccount/notifications");
+          break
+        case 'settings':
+          this.$router.push("../account/userAccount/settings");
+          break
+      }
+      
     },
   },
 });

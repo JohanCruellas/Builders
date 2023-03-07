@@ -8,6 +8,13 @@ export const useGlobalStore = defineStore("globalStore", {
       index: '',
       type: '',
       input: '',
+      user: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'johndoe@gmail.com',
+        phoneNumber: '05 05 05 05 05',
+        password: 'test',
+      }
     };
   },
 });

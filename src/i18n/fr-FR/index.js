@@ -6,8 +6,11 @@ export default {
   sourceDataSelect: "Sélectionnez une catégorie",
   ratio: "Ratio",
   type: "Type",
-  tooltip: 'Infobulle',
-
+  tooltip: "Infobulle",
+  accountProfile: "Profil",
+  accountPassword: "Mot de passe",
+  accountNotifications: "Notifications",
+  accountSettings: "Paramètres",
 
   // indicatorBuilder
   indicatorListTitle: "Liste des indicateurs",
@@ -33,7 +36,6 @@ export default {
   questionTab: "Questions",
   documentTab: "Documents",
   lang: "Langue",
-  accountSettings: "Paramètres",
   account: "Compte",
   logout: "Déconnexion",
 
@@ -57,6 +59,26 @@ export default {
   answer: "Réponse",
   addQuestion: "Ajouter une question",
   addAnswer: "Ajouter une réponse",
-  questionEditing: 'Editer la question',
-  openEnded: 'Répponse ouverte',
+  questionEditing: "Editer la question",
+  openEnded: "Répponse ouverte",
+
+  // AccountSettingsPage
+  accountSettingsTitle: "Paramètres du compte",
+  langSwitcherLabel: "Sélectionnez votre langue",
+  themeLabel: "Sélectionnez votre thème",
+  darkTheme: "Mode nuit",
+
+  // AccountProfilePage
+  labelFirstName: "Prénom",
+  labelLastName: "Nom",
+  labelEmail: "Email",
+  labelPhoneNumber: "Numéro de téléphone",
+  unfilledInput: "Champ non rempli",
+  resetBtn: "Réinitialiser",
+  successfulProfileUpdate: "Votre profil a été mis à jour avec succès",
+
+  // AccountPasswordPage
+  labelCurrentPassword: "Mot de passe actuel",
+  labelNewPassword: "Nouveau mot de passe",
+  successfulPasswordUpdate: "Votre mot de passe a été mis à jour avec succès",
 };
