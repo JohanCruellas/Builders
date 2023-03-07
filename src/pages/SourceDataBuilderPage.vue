@@ -1,18 +1,4 @@
 <template>
-  <!-- <label class="title">{{ $t("sourceDataListTitle") }}</label>
-  <div class="q-pa-md container bg-grey-2">
-    <div class="categories" v-for="(category, categoryIndex) in categories" :key="categoryIndex">
-      <div class="bg-category" :style="{ 'background-color': category.color }">
-        <div class="category-title">{{ $getTrad(category.text, $i18n.locale) }}</div>
-        <q-card class="card">
-          <q-scroll-area class="scroll-area">
-            <SourceDataBuilder :categoryIndexProp="categoryIndex" @currentDatasSettings="showDataSettings">
-            </SourceDataBuilder>
-          </q-scroll-area>
-        </q-card>
-      </div>
-    </div>
-  </div> -->
   <AxisSetter></AxisSetter>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
