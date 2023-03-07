@@ -16,7 +16,7 @@
     name: "IndicatorBuilderPage",
     components: {
       // SourceDataCategories,
-      // QuestionCategories,
+      // AxisSetter,
       IndicatorBuilder,
 
     },

@@ -260,25 +260,25 @@ export const useTemplateStore = defineStore("templateStore", {
         ],
         color: "#F8CBAD",
       },
-      questionsTemplate: {
+      templateQuestions: {
         categories: [
           {
-            name: "Gourvernance",
+            name: "Gouvernance",
             children: [
               {
-                name: "Sous-Gouvernance 1",
+                name: "Sous-Gouvernance1",
                 info: "",
                 color: "#FFD966",
                 questions: [],
               },
               {
-                name: "Sous-Gouvernance 2",
+                name: "Sous-Gouvernance2",
                 info: "",
                 color: "#FFD966",
                 questions: [],
               },
               {
-                name: "Sous-Gouvernance 3",
+                name: "Sous-Gouvernance3",
                 info: "",
                 color: "#FFD966",
                 questions: [],
@@ -311,7 +311,7 @@ export const useTemplateStore = defineStore("templateStore", {
           },
         ],
       },
-      axisTemplate: {
+      templateAxis: {
         categories: []
       }
     };

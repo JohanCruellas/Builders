@@ -48,7 +48,7 @@ export default defineComponent({
         select: this.categoryText[this.$i18n.locale],
         stockedIndexes: [categoryIndex, dataIndex],
       };
-      this.$emit("currentDatasSettings", currentDatasSettings);
+      this.$parent.$emit("currentDatasSettings", currentDatasSettings);
     },
   },
 });

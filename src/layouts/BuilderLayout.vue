@@ -20,19 +20,19 @@
                 <div class="text-h6 q-mb-md text-center">{{ $t("account") }}</div>
                 <div class="account">
                   <div @click="goToAccount('profil')" class="accountOption">
-                    <q-icon name="account_circle"/>
+                    <q-icon name="account_circle" />
                     <label class="cursor-pointer">{{ $t('accountProfile') }}</label>
                   </div>
                   <div @click="goToAccount('password')" class="accountOption">
-                    <q-icon name="key"/>
+                    <q-icon name="key" />
                     <label class="cursor-pointer">{{ $t('accountPassword') }}</label>
                   </div>
                   <div @click="goToAccount('notifications')" class="accountOption">
-                    <q-icon name="notifications"/>
+                    <q-icon name="notifications" />
                     <label class="cursor-pointer"> {{ $t('accountNotifications') }}</label>
                   </div>
                   <div @click="goToAccount('settings')" class="accountOption">
-                    <q-icon name="manage_accounts"/>
+                    <q-icon name="manage_accounts" />
                     <label class="cursor-pointer">{{ $t("accountSettings") }}</label>
                   </div>
                 </div>
@@ -46,13 +46,7 @@
                 <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
                 <!-- nom à modifier -->
 
-                <q-btn
-                  color="primary"
-                  :label="$t('logout')"
-                  push
-                  size="sm"
-                  v-close-popup
-                />
+                <q-btn color="primary" :label="$t('logout')" push size="sm" v-close-popup />
                 <!-- bouton de déconnexion, méthode à ajouter -->
               </div>
             </div>
@@ -68,69 +62,35 @@
       </q-tabs>
     </q-header>
 
-    <q-drawer show-if-above v-model="left" side="left" bordered>
-      <!-- drawer content -->
-      <div class="q-pa-md q-gutter-sm">
-        <q-tree
-          :nodes="treeNodesComputed"
-          node-key="id"
-          v-model:ticked="selectedNodes"
-          @update:ticked="log(event)"
-          tick-strategy="leaf"
-          :no-nodes-label="$t('noAxis')"
-        >
-          <template v-slot:default-header="prop">
-            <q-input
-              v-if="prop.node.parentId"
-              lazy-rules
-              :placeholder="
-                $t('stake') +
-                ' ' +
-                (getParentNode(prop.node).stakes.indexOf(
-                  getParentNode(prop.node).stakes.find(
-                    (stake) => stake.id === prop.node.id
-                  )
-                ) +
-                  1)
-              "
-              v-model="
-                treeNodes
-                  .find((axis) => axis.id === prop.node.parentId)
-                  .stakes.find((stake) => stake.id === prop.node.id).label
-              "
-              dense
-              @click.stop
-            >
-              <template v-slot:append>
-                <q-icon name="close" class="cursor-pointer" />
-              </template>
-            </q-input>
-            <q-input
-              v-else
-              lazy-rules
-              :placeholder="
-                $t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)
-              "
-              v-model="treeNodes.find((axis) => axis.id === prop.node.id).label"
-              dense
-              @click.stop
-            >
-              <template v-slot:append>
-                <q-icon name="close" class="cursor-pointer" />
-              </template>
-            </q-input>
-          </template>
-          <template v-slot:header-add="prop">
-            <q-btn @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
-          </template>
-        </q-tree>
-        <q-btn @click="addAxis()">{{ $t("axisAddBtn") }}</q-btn>
-        <q-btn @click="log()">Log</q-btn>
-      </div>
+    <q-drawer show-if-above v-model="left" side="left" bordered> <q-tree :nodes="treeNodesComputed" node-key="id"
+        v-model:ticked="selectedNodes" @update:ticked="log(event)" tick-strategy="leaf" :no-nodes-label="$t('noAxis')">
+        <template v-slot:default-header="prop">
+          <q-input v-if="prop.node.parentId" lazy-rules
+            :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
+            v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label"
+            dense @click.stop>
+            <template v-slot:append>
+              <q-icon name="close" class="cursor-pointer" />
+            </template>
+          </q-input>
+          <q-input v-else lazy-rules :placeholder="
+            $t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)
+          " v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" dense @click.stop>
+            <template v-slot:append>
+              <q-icon name="close" class="cursor-pointer" />
+            </template>
+          </q-input>
+        </template>
+        <template v-slot:header-add="prop">
+          <q-btn @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
+        </template>
+      </q-tree>
+      <q-btn @click="addAxis()">{{ $t("axisAddBtn") }}</q-btn>
+      <q-btn @click="log()">Log</q-btn>
     </q-drawer>
 
     <q-page-container class="q-my-md">
-      <router-view :selectedNodes="SelectedNodes" />
+      <router-view :selected-nodes="this.selectedNodes"></router-view>
     </q-page-container>
   </q-layout>
 </template>
@@ -149,7 +109,7 @@ export default defineComponent({
   data() {
     return {
       left: false,
-      treeNodes: templateStore.axisTemplate.categories,
+      treeNodes: templateStore.templateAxis.categories,
       selectedNodes: [],
     };
   },
@@ -159,38 +119,19 @@ export default defineComponent({
     },
     treeNodesComputed() {
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
-      computedTree.forEach((axis) => {
-        if (!axis.children) {
-          axis.children = [
-            ...axis.stakes,
-            {
-              label: this.$t("stakeAddBtn"),
-              header: "add",
-              parentId: axis.id,
-              tickable: false,
-              noTick: true,
-            },
-          ];
-        } else if (axis.children.at(-1).header !== "add") {
-          axis.children = [
-            ...axis.stakes,
-            {
-              label: this.$t("stakeAddBtn"),
-              header: "add",
-              parentId: axis.id,
-              tickable: false,
-              noTick: true,
-            },
-          ];
-        }
-      });
+      computedTree.forEach(
+        (axis) => {
+          if (!axis.children || axis.children.at(-1).header !== "add") {
+            axis.children = [...axis.stakes, { label: this.$t("stakeAddBtn"), header: "add", parentId: axis.id, noTick: true, tickable: false, tickStrategy: 'none' }]
+          }
+        })
       return computedTree;
     },
   },
   methods: {
     log(event) {
-      console.log(event);
-      console.log(this.selectedNodes);
+      console.log(this.selectedNodes)
+      console.log(this.treeNodes)
     },
     getParentNode(node) {
       return this.treeNodes.find((axis) => {
@@ -209,7 +150,7 @@ export default defineComponent({
     },
 
     goToAccount(route) {
-      switch(route) {
+      switch (route) {
         case 'profil':
           this.$router.push("../account/userAccount/profile");
           break
@@ -223,7 +164,7 @@ export default defineComponent({
           this.$router.push("../account/userAccount/settings");
           break
       }
-      
+
     },
   },
 });

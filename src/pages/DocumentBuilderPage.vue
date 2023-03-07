@@ -2,7 +2,7 @@
     <q-page class="flex flex-center">
       <!-- <SourceDataBuilder></SourceDataBuilder> -->
       <!-- <QuestionBuilder></QuestionBuilder> -->
-      <!-- <QuestionCategories></QuestionCategories> -->
+      <!-- <AxisSetter></AxisSetter> -->
       <DocumentBuilder></DocumentBuilder>
     </q-page>
   </template>

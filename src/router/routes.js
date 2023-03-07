@@ -7,7 +7,7 @@ const routes = [
       {path : 'Document', name: "DocBuilder", component: ()=> import('pages/DocumentBuilderPage.vue')},
       {path : 'Indicator', name: "IndicatorBuilder", component: ()=> import('pages/IndicatorBuilderPage.vue')},
       {path : 'DataSource', name: "DataSourceBuilder", component: ()=> import('pages/SourceDataBuilderPage.vue')},
-      {path : 'Question', name: "QuestionBuilder", component: ()=> import('pages/QuestionBuilderPage.vue')},
+      {path : 'Question', name: "QuestionsBuilder", component: ()=> import('src/pages/QuestionsBuilderPage.vue')},
     ]
   },
   {

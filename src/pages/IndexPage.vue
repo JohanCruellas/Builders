@@ -26,7 +26,7 @@ export default defineComponent({
   },
   components: {
     // SourceDataCategories,
-    // QuestionCategories,
+    // AxisSetter,
     // IndicatorBuilder,
   },
   methods: {
