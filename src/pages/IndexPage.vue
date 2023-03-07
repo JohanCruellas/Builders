@@ -44,9 +44,6 @@ export default defineComponent({
         case 'Document':
           this.$router.push("builders/Document")
           break;
-        case 'Axis':
-          this.$router.push("builders/Axis")
-          break;
       }
     }
   }

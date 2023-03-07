@@ -17,6 +17,16 @@ const routes = [
       {path: '', component: () => import('pages/IndexPage.vue') },
     ] 
   },
+  {
+    path: '/account',
+    component: () => import('layouts/MainLayout.vue'),
+    children : [
+      {path: 'userAccount/profile', name: "profilePage", component: () => import('src/pages/AccountProfilePage.vue')},
+      {path: 'userAccount/password', name: "passwordPage", component: () => import('src/pages/AccountPasswordPage.vue')},
+      {path: 'userAccount/notifications', name: "notificationPage", component: () => import('src/pages/AccountNotificationPage.vue')},
+      {path: 'userAccount/settings', name: "settingsPage", component: () => import('src/pages/AccountSettingsPage.vue')},
+    ]
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

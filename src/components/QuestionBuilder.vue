@@ -1,34 +1,80 @@
 <template>
-  <q-expansion-item v-for="(question, questionIndex) in questions" :key="questionIndex" expand-icon-toggle
-    switch-toggle-side :header-inset-level="0.25" :content-inset-level="1.5">
+  <q-expansion-item
+    v-for="(question, questionIndex) in questions"
+    :key="questionIndex"
+    expand-icon-toggle
+    switch-toggle-side
+    :header-inset-level="0.25"
+    :content-inset-level="1.5"
+  >
     <template v-slot:header>
-      <q-input class="cardInput" lazy-rules :placeholder="'Question ' + (questionIndex + 1)" v-model=question.text
-        :dense="true">
+      <q-input
+        class="cardInput"
+        lazy-rules
+        :placeholder="$t('question') + ' ' + (questionIndex + 1)"
+        v-model="question.text"
+        :dense="true"
+      >
         <template v-slot:append>
-          <q-icon name="settings" @click="showQuestionConfigPanel(questionIndex)" class="cursor-pointer" />
-          <q-icon name="close" @click="removeQuestion(questionIndex)" class="cursor-pointer" />
+          <q-icon
+            name="settings"
+            @click="showQuestionConfigPanel(questionIndex)"
+            class="cursor-pointer"
+          />
+          <q-icon
+            name="close"
+            @click="removeQuestion(questionIndex)"
+            class="cursor-pointer"
+          />
         </template>
         <template v-slot:before>
           <q-icon name="circle" size="xs" />
         </template>
       </q-input>
     </template>
-    <q-item v-for="(answer, answerIndex) in question.options" :key="answerIndex">
-      <q-input class="cardInput" lazy-rules :placeholder="'Answer ' + (answerIndex + 1)" v-model="answer.text"
-        :dense="true">
+    <q-item
+      v-for="(answer, answerIndex) in question.options"
+      :key="answerIndex"
+    >
+      <q-input
+        class="cardInput"
+        lazy-rules
+        :placeholder="$t('answer') + ' ' + (answerIndex + 1)"
+        v-model="answer.text"
+        :dense="true"
+      >
         <template v-slot:before>
           <q-icon name="radio_button_unchecked" size="xs" />
         </template>
         <template v-slot:append>
-          <q-input class="answerRatioInput" type="number" v-model="answer.ratio" prefix="%"
-            :readonly="(answerIndex === 0 && question.type === 'QCU') || (answerIndex + 1 === question.options.length && question.type === 'QCU')"></q-input>
-          <q-icon name="close" @click="removeAnswer(questionIndex, answerIndex)" class="cursor-pointer" />
+          <q-input
+            class="answerRatioInput"
+            type="number"
+            v-model="answer.ratio"
+            prefix="%"
+            :readonly="
+              (answerIndex === 0 && question.type === 'QCU') ||
+              (answerIndex + 1 === question.options.length &&
+                question.type === 'QCU')
+            "
+          ></q-input>
+          <q-icon
+            name="close"
+            @click="removeAnswer(questionIndex, answerIndex)"
+            class="cursor-pointer"
+          />
         </template>
       </q-input>
     </q-item>
     <q-item>
-      <q-input class="cardInput" v-model="newAnswerText" lazy-rules :placeholder="'Add Answer'" :dense="true"
-        @change="addAnswer(questionIndex)">
+      <q-input
+        class="cardInput"
+        v-model="newAnswerText"
+        lazy-rules
+        :placeholder="$t('addAnswer')"
+        :dense="true"
+        @change="addAnswer(questionIndex)"
+      >
         <template v-slot:before>
           <q-icon name="add_circle_outline" size="xs" />
         </template>
@@ -36,31 +82,48 @@
     </q-item>
   </q-expansion-item>
   <q-item :inset-level="1.25">
-    <q-input class="cardInput" v-model="newQuestionText" lazy-rules :placeholder="'Add Question'" :dense="true"
-      @change="addQuestion()">
+    <q-input
+      class="cardInput"
+      v-model="newQuestionText"
+      lazy-rules
+      :placeholder="$t('addQuestion')"
+      :dense="true"
+      @change="addQuestion()"
+    >
       <template v-slot:before>
         <q-icon name="add_circle" size="xs" />
       </template>
     </q-input>
-
   </q-item>
   <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
         <!-- Add question text if exist -->
-        <div class="text-h6" v-if="!(this.questions[this.questionDialogContentIndex].text)">Editing question {{
-          this.questionDialogContentIndex + 1 }}</div>
-        <div class="text-h6" v-else>Editing question : "{{ this.questions[this.questionDialogContentIndex].text }}"</div>
+        <div
+          class="text-h6"
+          v-if="!this.questions[this.questionDialogContentIndex].text"
+        >
+          {{ $t('questionEditing') }} {{ this.questionDialogContentIndex + 1 }}
+        </div>
+        <div class="text-h6" v-else>
+          {{}} : "{{
+            this.questions[this.questionDialogContentIndex].text
+          }}"
+        </div>
       </q-card-section>
       <q-card-section id="questionDialogBox" class="q-pt-none">
-        <q-item-label header>Tooltip</q-item-label>
+        <q-item-label header>{{ $t('tooltip') }}</q-item-label>
         <q-item dense>
           <q-item-section avatar>
             <q-icon name="info" />
           </q-item-section>
-          <q-input v-model="questionTooltip" dense @keyup.enter="prompt = false" />
+          <q-input
+            v-model="questionTooltip"
+            dense
+            @keyup.enter="prompt = false"
+          />
         </q-item>
-        <q-item-label header>Ratio</q-item-label>
+        <q-item-label header>{{ $t('ratio') }}</q-item-label>
         <q-item dense>
           <q-item-section avatar>
             <q-icon name="percent" />
@@ -69,16 +132,22 @@
             <q-slider color="teal" v-model="questionSlider" :step="1" />
           </q-item-section>
           <q-item-section avatar>
-            <q-input v-model.number="questionSlider" teal type="number" filled style="max-width: 75px" />
+            <q-input
+              v-model.number="questionSlider"
+              teal
+              type="number"
+              filled
+              style="max-width: 75px"
+            />
           </q-item-section>
         </q-item>
-        <q-item-label header>Type</q-item-label>
+        <q-item-label header>{{ $t('type') }}</q-item-label>
         <q-item tag="label" v-ripple>
           <q-item-section avatar>
             <q-icon name="checklist" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Type</q-item-label>
+            <q-item-label>{{ $t('type') }}</q-item-label>
           </q-item-section>
           <q-item-section avatar>
             <q-select v-model="questionType" :options="questionTypeOptions"
@@ -90,7 +159,7 @@
             <q-icon name="notes" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Open ended</q-item-label>
+            <q-item-label>{{ $t('openEnded') }}</q-item-label>
           </q-item-section>
           <q-item-section avatar>
             <q-checkbox v-model="questionOpenEnded" color="teal" />
@@ -124,46 +193,46 @@ export default defineComponent({
       ratioSlider: 1,
       newQuestionText: "",
       newAnswerText: "",
-      questionTypeOptions: ["QCM", "QCU"]
+      questionTypeOptions: ["QCM", "QCU"],
     };
   },
   computed: {
     questionType: {
       get() {
-        return this.questions[this.questionDialogContentIndex].type
+        return this.questions[this.questionDialogContentIndex].type;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].type = newvalue
-      }
+        this.questions[this.questionDialogContentIndex].type = newvalue;
+      },
     },
     questionSlider: {
       get() {
-        return this.questions[this.questionDialogContentIndex].ratio
+        return this.questions[this.questionDialogContentIndex].ratio;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].ratio = newvalue
-      }
+        this.questions[this.questionDialogContentIndex].ratio = newvalue;
+      },
     },
     questionTooltip: {
       get() {
-        return this.questions[this.questionDialogContentIndex].info
+        return this.questions[this.questionDialogContentIndex].info;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].info = newvalue
-      }
+        this.questions[this.questionDialogContentIndex].info = newvalue;
+      },
     },
     questionOpenEnded: {
       get() {
-        return this.questions[this.questionDialogContentIndex].hasOpenEnd
+        return this.questions[this.questionDialogContentIndex].hasOpenEnd;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].hasOpenEnd = newvalue
-      }
-    }
+        this.questions[this.questionDialogContentIndex].hasOpenEnd = newvalue;
+      },
+    },
   },
   methods: {
     consoleLog() {
-      console.log(this.questions)
+      console.log(this.questions);
     },
     questionTypeChanged(questionType, questionIndex) {
       if (questionType == "QCU") {
@@ -172,7 +241,7 @@ export default defineComponent({
       }
     },
     setDefaultRatio(answer, index, nbAnswers) {
-      let defaultRatio = Math.round(100 / (nbAnswers - 1))
+      let defaultRatio = Math.round(100 / (nbAnswers - 1));
       switch (index) {
         case 0:
           answer.ratio = 0;
@@ -181,7 +250,7 @@ export default defineComponent({
           answer.ratio = 100;
           break;
         default:
-          answer.ratio = defaultRatio * index
+          answer.ratio = defaultRatio * index;
       }
     },
     addQuestion() {
@@ -191,10 +260,12 @@ export default defineComponent({
       // console.log(templateQuestions.categories)
     },
     addAnswer(questionIndex) {
-      this.questions[questionIndex].options.push(new Answer(this.newAnswerText))
+      this.questions[questionIndex].options.push(
+        new Answer(this.newAnswerText)
+      );
       let nbAnswers = this.questions[questionIndex].options.length;
       this.questions[questionIndex].options.forEach((answer, i) => {
-        this.setDefaultRatio(answer, i, nbAnswers)
+        this.setDefaultRatio(answer, i, nbAnswers);
       });
       this.newAnswerText = "";
     },
@@ -202,20 +273,20 @@ export default defineComponent({
       this.questions.splice(questionIndex, 1);
     },
     removeAnswer(questionIndex, answerIndex) {
-      console.log(questionIndex)
+      console.log(questionIndex);
       this.questions[questionIndex].options.splice(answerIndex, 1);
       let nbAnswers = this.questions[questionIndex].options.length;
       this.questions[questionIndex].options.forEach((answer, i) => {
-        this.setDefaultRatio(answer, i, nbAnswers)
-      })
+        this.setDefaultRatio(answer, i, nbAnswers);
+      });
     },
     showQuestionConfigPanel(questionIndex) {
       this.questionDialogContentIndex = questionIndex;
       this.isQuestionDialogOpen = true;
     },
     toggleDropdown(question) {
-      question.isShown = !(question.isShown)
-    }
+      question.isShown = !question.isShown;
+    },
   },
   mounted() {
     //TODO Get default values
