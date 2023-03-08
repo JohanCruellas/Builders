@@ -63,8 +63,8 @@
     </q-header>
 
     <q-drawer show-if-above v-model="left" side="left" bordered>
-      <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes"
-        tick-strategy="leaf" :no-nodes-label="$t('noAxis')">
+      <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes" tick-strategy="leaf"
+        :no-nodes-label="$t('noAxis')">
         <template v-slot:default-header="prop">
           <q-input v-if="prop.node.parentId" lazy-rules
             :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
@@ -74,10 +74,8 @@
               <q-icon name="close" class="cursor-pointer" @click="delete(prop.node, 'stake')"/>
             </template> -->
           </q-input>
-          <q-input v-else lazy-rules 
-          :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)" 
-          v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" 
-          dense @click.stop>
+          <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
+            v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" dense @click.stop>
             <!-- <template v-slot:append>
             </template> -->
           </q-input>
@@ -112,8 +110,8 @@ export default defineComponent({
   data() {
     return {
       left: false,
-      treeNodes: templateStore.axisTemplate.categories,
       selectedNodes: [],
+      treeNodes: []
     };
   },
   computed: {
@@ -121,6 +119,7 @@ export default defineComponent({
       return this.$route;
     },
     treeNodesComputed() {
+      //Deepclone
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
       computedTree.forEach(
         (axis) => {
@@ -169,7 +168,6 @@ export default defineComponent({
         this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
       }
     },
-
     goToAccount(route) {
       switch (route) {
         case 'profil':
@@ -188,7 +186,7 @@ export default defineComponent({
     },
     saveToTemplate() {
       templateStore.axisTemplate.categories = this.treeNodes;
-      AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
+      // AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
     },
   },
 });

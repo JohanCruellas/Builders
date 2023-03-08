@@ -3,6 +3,6 @@ export class QuestionCategory {
             this.name = text,
             this.info = info,
             this.color = color,
-            this.questions = []
+            this.children = []
     }
 }

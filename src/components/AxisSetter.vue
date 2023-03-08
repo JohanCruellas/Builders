@@ -2,13 +2,13 @@
     <q-card v-for="(axis, axisIndex) in axisTemplate" :key="axisIndex" :name="axisIndex" class="catCard"
         :style="{ backgroundColor: axis.color }">
         <q-card-section>
-            <div class="text-h6">{{ axis.text }}</div>
+            <div class="text-h6">{{ axis.label }}</div>
         </q-card-section>
-        <q-card class="subcategoryCard" v-for="(stake, stakeIndex) in axis.children" :key="stakeIndex">
+        <q-card class="subcategoryCard" v-for="(stake, stakeIndex) in axis.stakes" :key="stakeIndex">
             <q-expansion-item expand-icon-toggle switch-toggle-side>
                 <template v-slot:header>
                     <q-item class="cardInput" dense>
-                        <q-item-section>{{ stake.text }}</q-item-section>
+                        <q-item-section>{{ stake.label }}</q-item-section>
                     </q-item>
                 </template>
                 <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="stake">
@@ -42,7 +42,7 @@ export default defineComponent({
     },
     data() {
         return {
-            axisTemplate: templateStore.questionsTemplate.categories,
+            // axisTemplate: templateStore.axisTemplate.categories,
             tabIndex: 0,
             JSONData: ""
         };
@@ -53,6 +53,9 @@ export default defineComponent({
         },
         currentRoute() {
             return this.$route.name
+        },
+        axisTemplate() {
+            return templateStore.axisTemplate.categories
         }
     },
     components: {
