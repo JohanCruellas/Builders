@@ -2,18 +2,19 @@
     <q-card v-for="(axis, axisIndex) in axisTemplate" :key="axisIndex" :name="axisIndex" class="catCard"
         :style="{ backgroundColor: axis.color }">
         <q-card-section>
-            <div class="text-h6">{{ axis.text }}</div>
+            <div class="text-h6">{{ axis.text[this.$store.lang] }}</div>
         </q-card-section>
         <q-card class="subcategoryCard" v-for="(stake, stakeIndex) in axis.children" :key="stakeIndex">
             <q-expansion-item expand-icon-toggle switch-toggle-side>
                 <template v-slot:header>
                     <q-item class="cardInput" dense>
-                        <q-item-section>{{ stake.text }}</q-item-section>
+                        <q-item-section>{{ stake.text[this.$store.lang] }}</q-item-section>
                     </q-item>
                 </template>
                 <QuestionBuilder v-if="currentRoute === 'QuestionsBuilder'" :stake-data="stake">
                 </QuestionBuilder>
-                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" @currentDatasSettings="parentEmit"></SourceDataBuilder> 
+                <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" @current-datas-settings="parentEmit(event)"
+                    :stake-data="stake"></SourceDataBuilder>
             </q-expansion-item>
         </q-card>
     </q-card>
@@ -47,10 +48,10 @@ export default defineComponent({
             JSONData: ""
         };
     },
-    // emits: ['currentDatasSettings'],
-    // setup(props, context) {
-    //     context.emit('currentDatasSettings')
-    // },
+    parentEmit(event) {
+        this.$emit('currentDatasSettings', event)
+    },
+    emits: ['currentDatasSettings'],
     computed: {
         selectedAxis() {
             return this.selectedNodes

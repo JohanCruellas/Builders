@@ -16,7 +16,8 @@ export const useGlobalStore = defineStore("globalStore", {
         email: 'johndoe@gmail.com',
         phoneNumber: '05 05 05 05 05',
         password: 'test',
-      }
+      },
+
     };
   },
 });

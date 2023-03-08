@@ -31,55 +31,9 @@ export default defineComponent({
   props: ['stakeData'],
   data() {
     return {
-      // categoryDatas: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].datas,
-      // categoryText: templateStore.sourceDataTemplate.categories[this.categoryIndexProp].text,
-      categoryDatas: [
-              {
-                data_key: "data_key_3",
-
-                info: {
-                  frFR: "test",
-                  enUS: "test",
-                },
-                text: {
-                  frFR: "Effectif total ",
-                  enUS: "Total headcount",
-                },
-              },
-              {
-                data_key: "data_key_4",
-
-                info: "",
-                text: {
-                  frFR: "CDI",
-                  enUS: "Permanent contract",
-                },
-              },
-              {
-                data_key: "data_key_5",
-
-                info: "",
-                text: {
-                  frFR: "Nombre d'Accidents du travail",
-                  enUS: "Number of work-related accidents",
-                },
-              },
-              {
-                data_key: "data_key_6",
-
-                info: "",
-                text: {
-                  frFR: "Chiffre d'affaires",
-                  enUS: "Turnover",
-                },
-              },
-            ]
+      categoryDatas: this.stakeData,
     };
   },
-  // emits: ['currentDatasSettings'],
-    // setup(props, context) {
-    //     context.emit('currentDatasSettings')
-    // },
   methods: {
     removeData(dataIndex) {
       this.categoryDatas.splice(dataIndex, 1);
@@ -102,6 +56,8 @@ export default defineComponent({
       console.log(this.stakeData)
     }
   },
-
+  // mounted() {
+  //   this.sourceData.push(templateStore.sourceDataTemplate.filter((dataSource) => {dataSource.stakeId === this.stakeId}))
+  // }
 });
 </script>

@@ -3,7 +3,9 @@ export default {
   saveBtn: "Save",
   modifyBtn: "Modify",
   closeBtn: "Close",
-  sourceDataSelect: "Select a category",
+  sourceDataCategorySelect: "Select a category",
+  sourceDataStakeSelect: "Select a stake",
+
   ratio: "Ratio",
   type: "Type",
   tooltip: "Tooltip",

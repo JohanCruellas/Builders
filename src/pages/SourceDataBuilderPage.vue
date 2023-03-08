@@ -1,5 +1,5 @@
 <template>
-  <AxisSetter @currentDatasSettings="showDataSettings"></AxisSetter>
+  <AxisSetter @current-datas-settings="showDataSettings"></AxisSetter>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
   </div>
@@ -33,7 +33,10 @@
                 })
               "></q-icon>
             </template></q-input>
-          <q-select v-model="select" :label="$t('sourceDataSelect')" :options="options"></q-select>
+          <q-select v-model="selectCategory" :label="$t('sourceDataCategorySelect')" :options="categoryOptions"
+            @update:model-value="isSelected = false"></q-select>
+          <q-select :disable="isSelected" v-model="selectStake" :label="$t('sourceDataStakeSelect')"
+            :options="stakeOptions"></q-select>
           <div class="flex flex-center">
             <q-btn v-if="isEdited" :label="$t('modifyBtn')" type="submit" color="primary" @click="saveEdit"></q-btn>
             <q-btn v-else :label="$t('saveBtn')" type="submit" color="primary" @click="addData" />
@@ -46,7 +49,6 @@
     </q-card>
   </q-dialog>
   <TranslateModal></TranslateModal>
-
 </template>
 
 <script>
@@ -63,22 +65,49 @@ const templateStore = useTemplateStore();
 
 export default defineComponent({
   name: "SourceDataCategories",
+  emits: ['currentDatasSettings'],
   data() {
     return {
-      categories: [],
+      categories: templateStore.sourceDataTemplate.categories,
       persistent: false,
       dataText: "",
       tooltip: "",
-      select: "",
+      selectCategory: "",
+      selectStake: "",
+      isSelected: true,
       axisIndex: '',
       currentIndicatorIndex: '',
-      options: [],
       stockedIndexes: [],
       isEdited: false, // = isModified
       JSONData: null,
     };
   },
+  computed: {
+    categoryOptions() {
+      let array = [];
+      this.categories.forEach((category) => {
+        array.push(category.text[this.$i18n.locale]);
+      });
+      return array
+    },
+
+    stakeOptions() {
+      let array = [];
+
+      let category = this.categories.find((category) => {
+        return category.text[this.$store.lang] == this.selectCategory;
+      })
+
+      if (category) {
+        category.children.forEach((stake) => {
+          array.push(stake.text[this.$i18n.locale]);
+        });
+      }
+      return array
+    }
+  },
   methods: {
+
 
     // ouvre la modale d'ajout de données
     openAddModal() {
@@ -89,40 +118,43 @@ export default defineComponent({
 
       this.dataText = "";
       this.tooltip = "";
-      this.select = "";
+      this.selectCategory = "";
     },
 
     // ajoute la donnée 
     addData() {
       let selectedCategory = this.categories.find(
-        (category) => category.name == this.select
+        (category) => category.text[this.$store.lang] == this.selectCategory
       );
-      selectedCategory.datas.push(new SourceData(this.tooltip, this.dataText));
+   
+      let test = selectedCategory.children.find(child => child.text[this.$store.lang] == this.selectStake);
+      console.log(test)
+      test.children.push(new SourceData(this.tooltip, this.dataText));
 
       this.dataText = "";
       this.tooltip = "";
-      this.select = "";
+      this.selectCategory = "";
       this.persistent = false;
     },
 
 
     saveEdit() {
-      this.categories[this.stockedIndexes[0]].datas[
+      this.categories[this.stockedIndexes[0]].children[
         this.stockedIndexes[1]
       ].text = this.dataText;
-      this.categories[this.stockedIndexes[0]].datas[
+      this.categories[this.stockedIndexes[0]].children[
         this.stockedIndexes[1]
       ].info = this.tooltip;
 
       if (this.select !== this.categories[this.stockedIndexes[0]].name) {
-        let selectedItem = this.categories[this.stockedIndexes[0]].datas.splice(
+        let selectedItem = this.categories[this.stockedIndexes[0]].children.splice(
           this.stockedIndexes[1],
           1
         )[0];
 
         this.categories
           .find((category) => category.name == this.select)
-          .datas.push(selectedItem);
+          .children.push(selectedItem);
         console.log(this.categories);
       }
 
@@ -139,25 +171,19 @@ export default defineComponent({
       this.currentIndicatorIndex = event.index;
       this.axisIndex = event.axisIndex;
     },
-
-
-    // toJSON() {
-    //   this.JSONData = JSON.stringify(templateStore.categories, null, 2);
-    // },
   },
 
-  mounted() {
-    this.categories = templateStore.sourceDataTemplate.categories;
-    this.categories.forEach((category) => {
-      this.options.push(category.text[this.$i18n.locale]);
-    });
+  // mounted() {
+  //   this.categories.forEach((category) => {
+  //     this.options.push(category.text[this.$i18n.locale]);
+  //   });
 
 
-  },
+  // },
   components: {
     AxisSetter,
     TranslateModal
-},
+  },
 });
 </script>
 
@@ -201,5 +227,4 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   row-gap: 1em;
-}
-</style>
+}</style>

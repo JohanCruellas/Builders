@@ -1,8 +1,8 @@
-function AxisTemplateSave(templatesToModify, axisTemplate) {
+function AxisTemplateSave(templatesToModify, axisTemplate, lang) {
     templatesToModify.forEach((template) => {
         //Save name changes
         template.categories.forEach((cat, catIndex) => {
-            cat.text = axisTemplate[catIndex].label;
+            cat.text[lang] = axisTemplate[catIndex].label;
             cat.children.forEach((child, childIndex) => {
                 child.text = axisTemplate[catIndex].stakes[childIndex].label;
             })
@@ -12,8 +12,8 @@ function AxisTemplateSave(templatesToModify, axisTemplate) {
             let stakeLength = cat.children.length;
             for (let i = 0; i < nbAddedStakes; i++) {
                 template.categories[catIndex].children.push({
-                    text: axisTemplate[catIndex].stakes[stakeLength + i].label,
-                    questions: []
+                    text: {[lang]: axisTemplate[catIndex].stakes[stakeLength + i].label},
+                    children: []
                 })
             }
         })
@@ -23,11 +23,12 @@ function AxisTemplateSave(templatesToModify, axisTemplate) {
         let templateLength = template.categories.length;
         for (let i = 0; i < nbAddedAxis; i++) {
             template.categories.push({
-                text: axisTemplate[templateLength + i].label,
+                text: {[lang]: axisTemplate[templateLength + i].label},
+                id: self.crypto.randomUUID(),
                 children: axisTemplate[templateLength + i].stakes.map((stake) => {
                     return {
-                        text: stake.label,
-                        questions: []
+                        text: {[lang]: stake.label},
+                        children: []
                     }
                 })
             })
