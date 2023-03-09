@@ -42,7 +42,6 @@ export default defineComponent({
     },
     data() {
         return {
-            // axisTemplate: templateStore.axisTemplate.categories,
             tabIndex: 0,
             JSONData: ""
         };
@@ -62,8 +61,7 @@ export default defineComponent({
         QuestionBuilder,
         SourceDataBuilder
     },
-    mounted() {
-    }
+    
 })
 </script>
 

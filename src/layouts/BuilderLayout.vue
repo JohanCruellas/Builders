@@ -129,6 +129,9 @@ export default defineComponent({
         })
       return computedTree;
     },
+    treeNodeTemplate() {
+      return templateStore.axisTemplate.categories;
+    }
   },
   methods: {
     log(event) {
@@ -151,22 +154,27 @@ export default defineComponent({
       this.treeNodes.push(new Axis());
     },
     deleteNode(node) {
+      console.log(this.treeNodes.splice(this.treeNodes.indexOf(node), 1))
+
       if (node.parentId) {
-        this.treeNodes
-          .find((axis) => {
-            return axis.id === node.parentId;
-          })
-          .stakes.splice(
-            this.treeNodes
-              .find((axis) => {
-                return axis.id === node.parentId;
-              })
-              .stakes.indexOf(node),
-            1
-          );
-      } else {
-        this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
+        let nodeAxis = this.treeNodes.find((axis) => { return axis.id == node.parentId; });
+        // nodeAxis.stakes.splice(nodeAxis.stakes.indexOf(node), 1);
+        console.log(nodeAxis)
       }
+      else {
+        // this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
+      }
+      // console.log(this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node))
+      // if (node.parentId) {
+      //   this.treeNodes.find((axis) => {
+      //     return axis.id === node.parentId;
+      //   }).stakes.splice(
+      //     this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node),
+      //     1);
+      // } else {
+      //   this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
+      // }
+
     },
     goToAccount(route) {
       switch (route) {
@@ -189,6 +197,15 @@ export default defineComponent({
       // AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
     },
   },
+  mounted() {
+    this.treeNodes = JSON.parse(JSON.stringify(templateStore.axisTemplate.categories));
+  },
+  watch: {
+    treeNodeTemplate() {
+      console.log('passed in watcher')
+      this.treeNodes = JSON.parse(JSON.stringify(templateStore.axisTemplate.categories));
+    }
+  }
 });
 </script>
 

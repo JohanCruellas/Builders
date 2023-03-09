@@ -1,6 +1,6 @@
 <template>
   <q-expansion-item
-    v-for="(question, questionIndex) in questions"
+    v-for="([question_key, question_value], questionIndex) in Object.entries(questions)"
     :key="questionIndex"
     expand-icon-toggle
     switch-toggle-side
@@ -12,18 +12,18 @@
         class="cardInput"
         lazy-rules
         :placeholder="$t('question') + ' ' + (questionIndex + 1)"
-        v-model="question.text"
+        v-model="question_value.text"
         :dense="true"
       >
         <template v-slot:append>
           <q-icon
             name="settings"
-            @click="showQuestionConfigPanel(questionIndex)"
+            @click="showQuestionConfigPanel(question_key)"
             class="cursor-pointer"
           />
           <q-icon
             name="close"
-            @click="removeQuestion(questionIndex)"
+            @click="removeQuestion(question_key)"
             class="cursor-pointer"
           />
         </template>
@@ -33,7 +33,7 @@
       </q-input>
     </template>
     <q-item
-      v-for="(answer, answerIndex) in question.options"
+      v-for="(answer, answerIndex) in question_value.options"
       :key="answerIndex"
     >
       <q-input
@@ -53,14 +53,14 @@
             v-model="answer.ratio"
             prefix="%"
             :readonly="
-              (answerIndex === 0 && question.type === 'QCU') ||
-              (answerIndex + 1 === question.options.length &&
-                question.type === 'QCU')
+              (answerIndex === 0 && question_value.type === 'QCU') ||
+              (answerIndex + 1 === question_value.options.length &&
+              question_value.type === 'QCU')
             "
           ></q-input>
           <q-icon
             name="close"
-            @click="removeAnswer(questionIndex, answerIndex)"
+            @click="removeAnswer(question_key, question_value, answerIndex)"
             class="cursor-pointer"
           />
         </template>
@@ -73,7 +73,7 @@
         :placeholder="$t('addAnswer')"
         :dense="true"
         v-model="newAnswerTexts[questionIndex]"
-        @change="addAnswer(questionIndex)"
+        @change="addAnswer(question_key, questionIndex)"
       >
         <template v-slot:before>
           <q-icon name="add_circle_outline" size="xs" />
@@ -95,19 +95,17 @@
       </template>
     </q-input>
   </q-item>
+  
   <q-dialog v-model="isQuestionDialogOpen" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
         <!-- Add question text if exist -->
-        <div
-          class="text-h6"
-          v-if="!this.questions[this.questionDialogContentIndex].text"
-        >
-          {{ $t('questionEditing') }} {{ this.questionDialogContentIndex + 1 }}
+        <div class="text-h6" v-if="!this.questions[this.questionDialogContentKey].text">
+          {{ $t('questionEditing') }} :
         </div>
         <div class="text-h6" v-else>
-          {{}} : "{{
-            this.questions[this.questionDialogContentIndex].text
+          {{ $t('questionEditing') }} : "{{
+            this.questions[this.questionDialogContentKey].text
           }}"
         </div>
       </q-card-section>
@@ -151,7 +149,7 @@
           </q-item-section>
           <q-item-section avatar>
             <q-select v-model="questionType" :options="questionTypeOptions"
-              @update:model-value="questionTypeChanged(questionType, this.questionDialogContentIndex)" />
+              @update:model-value="questionTypeChanged(questionType, this.questionDialogContentKey)" />
           </q-item-section>
         </q-item>
         <q-item tag="label" v-ripple>
@@ -187,9 +185,9 @@ export default defineComponent({
   props: ['stakeData'],
   data() {
     return {
-      questions: [],
+      // questions: {},
       isQuestionDialogOpen: false,
-      questionDialogContentIndex: null,
+      questionDialogContentKey: null,
       ratioSlider: 1,
       newQuestionText: "",
       newAnswerTexts: [],
@@ -199,39 +197,51 @@ export default defineComponent({
   computed: {
     questionType: {
       get() {
-        return this.questions[this.questionDialogContentIndex].type;
+        return templateStore.questionsTemplate[this.questionDialogContentKey].type;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].type = newvalue;
+        templateStore.questionsTemplate[this.questionDialogContentKey].type = newvalue;
       },
     },
     questionSlider: {
       get() {
-        return this.questions[this.questionDialogContentIndex].ratio;
+        return templateStore.questionsTemplate[this.questionDialogContentKey].ratio;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].ratio = newvalue;
+        templateStore.questionsTemplate[this.questionDialogContentKey].ratio = newvalue;
       },
     },
     questionTooltip: {
       get() {
-        return this.questions[this.questionDialogContentIndex].info;
+        return templateStore.questionsTemplate[this.questionDialogContentKey].info;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].info = newvalue;
+        templateStore.questionsTemplate[this.questionDialogContentKey].info = newvalue;
       },
     },
     questionOpenEnded: {
       get() {
-        return this.questions[this.questionDialogContentIndex].hasOpenEnd;
+        return templateStore.questionsTemplate[this.questionDialogContentKey].hasOpenEnd;
       },
       set(newvalue) {
-        this.questions[this.questionDialogContentIndex].hasOpenEnd = newvalue;
+        templateStore.questionsTemplate[this.questionDialogContentKey].hasOpenEnd = newvalue;
       },
     },
+    questions() {
+      let questionsFiltered = {};
+      Object.entries(templateStore.questionsTemplate).forEach(([key, object]) => {
+          if(object.stakeId == this.stakeData.id) {
+            questionsFiltered[key] = object
+          }
+        })
+      return questionsFiltered;
+    }
   },
   methods: {
     consoleLog() {
+      console.log('questionsTemplate')
+      console.log(templateStore.questionsTemplate);
+      console.log('this.questions')
       console.log(this.questions);
     },
     questionTypeChanged(questionType, questionIndex) {
@@ -254,47 +264,46 @@ export default defineComponent({
       }
     },
     addQuestion() {
-      this.questions.push(new Question(this.newQuestionText, this.stakeData.parentId, this.stakeData.id));
+      const newQuestion = new Question(this.newQuestionText, this.stakeData.parentId, this.stakeData.id);
+      templateStore.questionsTemplate[newQuestion.question_key] = newQuestion;
       this.newQuestionText = "";
-      // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
-      // console.log(questionsTemplate.categories)
     },
-    addAnswer(questionIndex) {
-      this.questions[questionIndex].options.push(
+    addAnswer(question_key, questionIndex) {
+      console.log(questionIndex)
+      templateStore.questionsTemplate[question_key].options.push(
         new Answer(this.newAnswerTexts[questionIndex])
       );
-      let nbAnswers = this.questions[questionIndex].options.length;
-      this.questions[questionIndex].options.forEach((answer, i) => {
+      let nbAnswers = templateStore.questionsTemplate[question_key].options.length;
+      templateStore.questionsTemplate[question_key].options.forEach((answer, i) => {
         this.setDefaultRatio(answer, i, nbAnswers);
       });
       this.newAnswerTexts[questionIndex] = "";
     },
-    removeQuestion(questionIndex) {
-      this.questions.splice(questionIndex, 1);
+    removeQuestion(question_key) {
+      delete templateStore.questionsTemplate[question_key];
     },
-    removeAnswer(questionIndex, answerIndex) {
-      console.log(questionIndex);
-      this.questions[questionIndex].options.splice(answerIndex, 1);
-      let nbAnswers = this.questions[questionIndex].options.length;
-      this.questions[questionIndex].options.forEach((answer, i) => {
+    removeAnswer(question_key, question_value, answerIndex) {
+      templateStore.questionsTemplate[question_key].options.splice(answerIndex, 1);
+      let nbAnswers = question_value.options.length;
+      question_value.options.forEach((answer, i) => {
         this.setDefaultRatio(answer, i, nbAnswers);
       });
     },
-    showQuestionConfigPanel(questionIndex) {
-      this.questionDialogContentIndex = questionIndex;
+    showQuestionConfigPanel(question_key) {
+      this.questionDialogContentKey = question_key;
       this.isQuestionDialogOpen = true;
     },
     toggleDropdown(question) {
       question.isShown = !question.isShown;
     },
   },
-  mounted() {
-    //TODO Get default values
-    // let stakeQuestions = templateStore.questionsTemplate.categories.find(category => category.name == this.stakeData.name).questions) 
-    //get parent stake
-    // console.log(this.stakeData)
-    // this.questions.push(templateStore.questionsTemplate.find(question => question.stakeId == this.stakeData.id))
-  }
+  // mounted() {
+  //   Object.entries(templateStore.questionsTemplate).forEach(([key, object]) => {
+  //     if(object.stakeId == this.stakeData.id) {
+  //       this.questions[key] = object
+  //     }
+  //   })
+  // },
 })
 </script>
 
