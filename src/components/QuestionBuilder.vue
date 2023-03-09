@@ -269,7 +269,6 @@ export default defineComponent({
       this.newQuestionText = "";
     },
     addAnswer(question_key, questionIndex) {
-      console.log(questionIndex)
       templateStore.questionsTemplate[question_key].options.push(
         new Answer(this.newAnswerTexts[questionIndex])
       );
@@ -297,13 +296,6 @@ export default defineComponent({
       question.isShown = !question.isShown;
     },
   },
-  // mounted() {
-  //   Object.entries(templateStore.questionsTemplate).forEach(([key, object]) => {
-  //     if(object.stakeId == this.stakeData.id) {
-  //       this.questions[key] = object
-  //     }
-  //   })
-  // },
 })
 </script>
 
