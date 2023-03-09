@@ -19,8 +19,27 @@ export const useTemplateStore = defineStore("templateStore", {
           info: { enUS: "I am test2", frFR: 'je suis test2' }
         },
       },
-      indicatorsTemplate: [],
-      questionsTemplate: [],
+      indicatorsTemplate: {},
+      questionsTemplate: {
+        "e614be2d-c644-4a70-ac95-d10ebb8cdfss": {
+          stakeId: "e614be2d-c644-4a70-ac95-d10ebb8cdf15",
+          axisId: "e614be2d-c644-4a70-ac95-d10ebb8cdf14",
+          text: "MockQuestion1",
+          options: []
+        },
+        "e614be2d-c644-4a70-ac95-d10ebb8cdfee": {
+          stakeId: "e614be2d-c644-4a70-ac95-d10ebb8cdf15",
+          axisId: "e614be2d-c644-4a70-ac95-d10ebb8cdf14",
+          text: "MockQuestion2",
+          options: []
+        },
+        "e614be2d-c644-4a70-ac95-d10ebb8cdfzzz": {
+          stakeId: "e614be2d-c644-4a70-ac95-d10ebb8cdfzz",
+          axisId: "e614be2d-c644-4a70-ac95-qshdbjqsdhj",
+          text: "MockQuestionNotInAxis",
+          options: []
+        },
+      },
       axisTemplate: {
         categories: [
           {

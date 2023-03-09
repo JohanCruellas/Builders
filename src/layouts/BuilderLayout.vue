@@ -63,31 +63,52 @@
     </q-header>
 
     <q-drawer show-if-above v-model="left" side="left" bordered>
-      <q-tree :nodes="treeNodesComputed" node-key="id" v-model:ticked="selectedNodes" tick-strategy="leaf"
-        :no-nodes-label="$t('noAxis')">
-        <template v-slot:default-header="prop">
-          <q-input v-if="prop.node.parentId" lazy-rules
-            :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
-            v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label[this.$store.lang]"
-            dense @click.stop>
-            <!-- <template v-slot:append>
-              <q-icon name="close" class="cursor-pointer" @click="delete(prop.node, 'stake')"/>
-            </template> -->
-          </q-input>
-          <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
-            v-model="treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]" dense @click.stop>
-            <!-- <template v-slot:append>
-            </template> -->
-          </q-input>
-          <q-icon name="close" size="xs" class="cursor-pointer" @click.stop @click="deleteNode(prop.node)"></q-icon>
-        </template>
-        <template v-slot:header-add="prop">
-          <q-btn @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
-        </template>
-      </q-tree>
-      <q-btn @click="addAxis()">{{ $t("axisAddBtn") }}</q-btn>
-      <q-btn @click="saveToTemplate()">Save</q-btn>
-      <q-btn @click="log()">Log</q-btn>
+      <q-item class="row">
+        <q-space />
+        <q-icon name="edit_note" size="sm" color="grey" class="cursor-pointer editIcon" @click.stop
+          @click="editOn = !editOn"></q-icon>
+      </q-item>
+      <q-item>
+        <q-tree :nodes="treeNodesComputed" node-key="id" :no-nodes-label="$t('noAxis')" v-model:ticked="selectedNodes"
+          :tick-strategy="tickStrategy" dense>
+          <template v-slot:default-header="prop" v-if="editOn === true">
+            <q-item>
+              <q-item-section>
+                <q-input v-if="prop.node.parentId" lazy-rules
+                  :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
+                  v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label"
+                  dense @click.stop>
+                </q-input>
+                <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
+                  v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" dense @click.stop>
+                </q-input>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="close" size="xs" class="cursor-pointer" @click.stop @click="deleteNode(prop.node)"></q-icon>
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:default-header="prop" v-else>
+            <q-item>
+              <q-item-section v-if="prop.node.parentId" dense>
+                {{ treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id ===
+                prop.node.id).label }}
+              </q-item-section>
+              <q-item-section v-else lazy-rules dense>
+                {{treeNodes.find((axis) => axis.id === prop.node.id).label}}
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:header-add="prop">
+            <q-btn v-if="editOn === true" @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
+          </template>
+        </q-tree>
+      </q-item>
+      <q-item>
+        <q-btn @click="addAxis()" v-if="editOn === true">{{ $t("axisAddBtn") }}</q-btn>
+        <q-btn @click="saveToTemplate()" v-if="editOn === true">Save</q-btn>
+      </q-item>
+
     </q-drawer>
 
     <q-page-container class="q-my-md">
@@ -109,6 +130,7 @@ export default defineComponent({
   name: "BuilderLayout",
   data() {
     return {
+      editOn: false,
       left: false,
       selectedNodes: [],
       treeNodes: []
@@ -121,18 +143,38 @@ export default defineComponent({
     treeNodesComputed() {
       //Deepclone
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
-      computedTree.forEach(
-        (axis) => {
-          if (!axis.children || axis.children.at(-1).header !== "add") {
-            axis.children = [...axis.stakes, { label: this.$t("stakeAddBtn"), header: "add", parentId: axis.id, noTick: true, tickable: false, tickStrategy: 'none' }]
-          }
-        })
+      // console.log(computedTree)
+      if (this.editOn === true) {
+        computedTree.forEach(
+          (axis) => {
+            if (!axis.children || axis.children.at(-1).header !== "add") {
+              axis.children = [...axis.stakes, { label: this.$t("stakeAddBtn"), header: "add", parentId: axis.id, noTick: true, tickable: false, tickStrategy: 'none' }]
+            }
+          })
+      }
+      else {
+        computedTree.forEach(
+          (axis) => {
+            axis.children = axis.stakes
+          })
+      }
       return computedTree;
     },
+    treeNodeTemplate() {
+      return templateStore.axisTemplate.categories;
+    },
+    tickStrategy() {
+      if (this.editOn === true) {
+        return 'none'
+      }
+      else {
+        return 'leaf'
+      }
+    }
   },
   methods: {
     log(event) {
-      console.log(this.selectedNodes)
+      console.log(this.treeNodesComputed)
       console.log(this.treeNodes)
     },
     getParentNode(node) {
@@ -151,22 +193,31 @@ export default defineComponent({
       this.treeNodes.push(new Axis());
     },
     deleteNode(node) {
+      console.log(node)
+      // console.log(this.treeNodes.splice(this.treeNodes.indexOf(node), 1))
+      
       if (node.parentId) {
-        this.treeNodes
-          .find((axis) => {
-            return axis.id === node.parentId;
-          })
-          .stakes.splice(
-            this.treeNodes
-              .find((axis) => {
-                return axis.id === node.parentId;
-              })
-              .stakes.indexOf(node),
-            1
-          );
-      } else {
+        let nodeAxis = this.treeNodes.find((axis) => { return axis.id == node.parentId; });
+        console.log(node)
+        console.log(nodeAxis.stakes)
+        console.log(nodeAxis.stakes.indexOf(node))
+        // nodeAxis.stakes.splice(nodeAxis.stakes.indexOf(node), 1);
+        // console.log(nodeAxis)
+      }
+      else {
         this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
       }
+      // console.log(this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node))
+      // if (node.parentId) {
+      //   this.treeNodes.find((axis) => {
+      //     return axis.id === node.parentId;
+      //   }).stakes.splice(
+      //     this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node),
+      //     1);
+      // } else {
+      //   this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
+      // }
+
     },
     goToAccount(route) {
       switch (route) {
@@ -190,9 +241,14 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.treeNodes = templateStore.axisTemplate.categories;
+    this.treeNodes = JSON.parse(JSON.stringify(templateStore.axisTemplate.categories));
   },
-  
+  watch: {
+    treeNodeTemplate() {
+      console.log('passed in watcher')
+      this.treeNodes = JSON.parse(JSON.stringify(templateStore.axisTemplate.categories));
+    }
+  }
 });
 </script>
 
@@ -221,4 +277,6 @@ export default defineComponent({
   background-color: beige;
   cursor: pointer;
 }
+
+.editIcon {}
 </style>

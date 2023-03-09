@@ -1,5 +1,7 @@
 export class Question {
-    constructor(text, axisId, stakeId) {
+    constructor(text, axisId, stakeId) 
+    
+    {
         this.question_key = self.crypto.randomUUID();
         this.axisId = axisId;
         this.stakeId = stakeId;
