@@ -1,6 +1,8 @@
 export class Question {
-    constructor(text) {
+    constructor(text, axisId, stakeId) {
         this.question_key = self.crypto.randomUUID();
+        this.axisId = axisId;
+        this.stakeId = stakeId;
         this.type = "QCU";
         this.ratio = 100;
         this.info = "";

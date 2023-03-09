@@ -187,7 +187,7 @@ export default defineComponent({
   props: ['stakeData'],
   data() {
     return {
-      questions: this.stakeData.questions,
+      questions: [],
       isQuestionDialogOpen: false,
       questionDialogContentIndex: null,
       ratioSlider: 1,
@@ -232,7 +232,7 @@ export default defineComponent({
   },
   methods: {
     consoleLog() {
-      console.log(this.newAnswerTexts);
+      console.log(this.questions);
     },
     questionTypeChanged(questionType, questionIndex) {
       if (questionType == "QCU") {
@@ -254,7 +254,7 @@ export default defineComponent({
       }
     },
     addQuestion() {
-      this.questions.push(new Question(this.newQuestionText));
+      this.questions.push(new Question(this.newQuestionText, this.stakeData.parentId, this.stakeData.id));
       this.newQuestionText = "";
       // templateStore.questionsTemplate.categories[this.tabIndex].questions.push(new Question(/*`Question ${this.questions.length + 1}`*/))
       // console.log(questionsTemplate.categories)
@@ -293,6 +293,7 @@ export default defineComponent({
     // let stakeQuestions = templateStore.questionsTemplate.categories.find(category => category.name == this.stakeData.name).questions) 
     //get parent stake
     // console.log(this.stakeData)
+    // this.questions.push(templateStore.questionsTemplate.find(question => question.stakeId == this.stakeData.id))
   }
 })
 </script>

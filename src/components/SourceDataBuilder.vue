@@ -1,21 +1,13 @@
 <template>
   <q-list>
-    <q-item v-for="(data, dataIndex) in categoryDatas" :key="dataIndex" style="width:100%">
-        <q-item-section class="q-mr-md ">{{ $getTrad(data.text, $i18n.locale) }}</q-item-section>
-        <q-item-section avatar>
-          <q-icon
-          name="settings"
-          class="cursor-pointer"
-          @click="openUpdateModal(data, dataIndex)"
-        ></q-icon>
-        </q-item-section>
-        <q-item-section avatar>
-          <q-icon
-          name="close"
-          class="cursor-pointer"
-          @click="removeData(dataIndex)"
-        ></q-icon>
-        </q-item-section>
+    <q-item v-for="([dataKey, dataValue], dataIndex) in Object.entries(sourceDatas)" :key="dataIndex" style="width:100%">
+      <q-item-section class="q-mr-md ">{{ $getTrad(dataValue.text, $i18n.locale) }}</q-item-section>
+      <q-item-section avatar>
+        <q-icon name="settings" class="cursor-pointer" @click="openUpdateModal(dataValue, dataKey)"></q-icon>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-icon name="close" class="cursor-pointer" @click="removeData(dataKey)"></q-icon>
+      </q-item-section>
     </q-item>
   </q-list>
 </template>
@@ -31,33 +23,38 @@ export default defineComponent({
   props: ['stakeData'],
   data() {
     return {
-      categoryDatas: this.stakeData,
+
     };
   },
+  computed: {
+    sourceDatas() {
+      let sourceDatasFiltered = {};
+      Object.entries(templateStore.sourceDataTemplate).forEach(([key, object]) => {
+        if (object.stakeId === this.stakeData.id) {
+          sourceDatasFiltered[key] = object;
+        }});
+        return sourceDatasFiltered 
+    }
+  },
   methods: {
-    removeData(dataIndex) {
-      this.categoryDatas.splice(dataIndex, 1);
+    removeData(key) {
+      delete this.sourceDatas[key];
     },
-    openUpdateModal(data,dataIndex) {
+    openUpdateModal(dataValue, dataKey) {
+      
       let currentDatasSettings =
       {
         persistent: true,
         isEdited: true,
-        dataText: data.text[this.$i18n.locale],
-        tooltip: data.info[this.$i18n.locale],
-        axisIndex: 4, // mockup data, récuprer l'index de l'axe depuis prop stake-data
-        index: dataIndex,
+        dataText: dataValue.text[this.$i18n.locale],
+        axisId: dataValue.axisId,
+        stakeId: dataValue.stakeId,
+        tooltip: dataValue.info[this.$i18n.locale],
+        key: dataKey,
       };
       this.$emit("currentDatasSettings", currentDatasSettings);
     },
   },
-  watch: {
-    stakeData() {
-      console.log(this.stakeData)
-    }
-  },
-  // mounted() {
-  //   this.sourceData.push(templateStore.sourceDataTemplate.filter((dataSource) => {dataSource.stakeId === this.stakeId}))
-  // }
+
 });
 </script>

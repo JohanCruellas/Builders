@@ -24,7 +24,7 @@ export default defineComponent({
     return {
       modal: true,
       persistent: false,
-      store: '',
+      store: null,
       translations: {},
     };
   },
@@ -43,23 +43,27 @@ export default defineComponent({
       handler: function() {
         switch (this.$store.type) {
         case 'indicators':
-          this.store = templateStore.indicatorsTemplate.indicators[this.$store.axisIndex];
+          this.store = templateStore.indicatorsTemplate[this.$store.key];
           break;
         case 'sourceData':
-          this.store = templateStore.sourceDataTemplate.categories[this.$store.axisIndex];
+          this.store = templateStore.sourceDataTemplate[this.$store.key];
           console.log(this.store)
           break;
       }
 
+      console.log(this.$store)
+
       switch (this.$store.input) {
         case 'text':
-          this.translations = this.store.datas[this.$store.index].text;
+          console.log(this.store)
+          this.translations = this.store.text;
           break;
         case 'tooltip':
-          this.translations = this.store.datas[this.$store.index].info;
-          console.log(this.store.datas[this.$store.index])
+          console.log(this.store)
+          this.translations = this.store.info;
+         
           break;
-          case 'select':
+        case 'select':
           this.translations = this.store.type;
           break;
       }

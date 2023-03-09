@@ -1,5 +1,5 @@
 <template>
-  <AxisSetter @current-datas-settings="showDataSettings"></AxisSetter>
+  <AxisSetter @new-emit="showDataSettings"></AxisSetter>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
   </div>
@@ -12,9 +12,7 @@
             <template v-slot:after>
               <q-icon v-if="isEdited" name="translate" class="cursor-pointer" @click="
                 this.$openModal({
-                  index: this.currentIndicatorIndex,
-                  axisIndex: this.axisIndex,
-                  info: this.tooltip,
+                  key: this.currentKey,
                   type: 'sourceData',
                   input: 'text',
                 })">
@@ -25,17 +23,16 @@
             <template v-slot:after>
               <q-icon v-if="isEdited" name="translate" class="cursor-pointer" @click="
                 this.$openModal({
-                  index: this.currentIndicatorIndex,
-                  axisIndex: this.axisIndex,
+                  key: this.currentKey,
                   info: this.tooltip,
                   type: 'sourceData',
                   input: 'tooltip',
                 })
               "></q-icon>
             </template></q-input>
-          <q-select v-model="selectCategory" :label="$t('sourceDataCategorySelect')" :options="categoryOptions"
-            @update:model-value="isSelected = false"></q-select>
-          <q-select :disable="isSelected" v-model="selectStake" :label="$t('sourceDataStakeSelect')"
+          <q-select v-model="pickedCategory" :label="$t('sourceDataCategorySelect')" :options="categoryOptions"
+            @update:model-value="isDisabled = false"></q-select>
+          <q-select :disable="isDisabled" v-model="pickedStake" :label="$t('sourceDataStakeSelect')"
             :options="stakeOptions"></q-select>
           <div class="flex flex-center">
             <q-btn v-if="isEdited" :label="$t('modifyBtn')" type="submit" color="primary" @click="saveEdit"></q-btn>
@@ -65,46 +62,53 @@ const templateStore = useTemplateStore();
 
 export default defineComponent({
   name: "SourceDataCategories",
-  emits: ['currentDatasSettings'],
+  emits: ['newEmit'],
   data() {
     return {
-      categories: templateStore.sourceDataTemplate.categories,
+      categories: templateStore.axisTemplate.categories,
+      // sourceDatas: templateStore.sourceDataTemplate,
+      currentCategory: null,
+      currentStake: null,
+      currentKey: '',
+      // options: [],
       persistent: false,
       dataText: "",
       tooltip: "",
-      selectCategory: "",
-      selectStake: "",
-      isSelected: true,
-      axisIndex: '',
-      currentIndicatorIndex: '',
-      stockedIndexes: [],
+      pickedCategory: null,
+      pickedStake: null,
+      isDisabled: true,
       isEdited: false, // = isModified
-      JSONData: null,
     };
   },
   computed: {
+
+    sourceDatas() {
+      return templateStore.sourceDataTemplate;
+    },
+
     categoryOptions() {
       let array = [];
       this.categories.forEach((category) => {
-        array.push(category.text[this.$i18n.locale]);
+        array.push({label: category.label[this.$store.lang], value: category.id}); 
       });
       return array
     },
 
     stakeOptions() {
       let array = [];
-
+      
       let category = this.categories.find((category) => {
-        return category.text[this.$store.lang] == this.selectCategory;
+        return category.id == this.pickedCategory.value; 
       })
 
       if (category) {
-        category.children.forEach((stake) => {
-          array.push(stake.text[this.$i18n.locale]);
+        category.stakes.forEach((stake) => {
+          array.push({label: stake.label[this.$store.lang], value: stake.id}); 
         });
       }
       return array
-    }
+    },
+
   },
   methods: {
 
@@ -118,68 +122,57 @@ export default defineComponent({
 
       this.dataText = "";
       this.tooltip = "";
-      this.selectCategory = "";
+      this.pickedCategory = "";
+      this.pickedStake = "";
     },
 
     // ajoute la donnée 
     addData() {
-      let selectedCategory = this.categories.find(
-        (category) => category.text[this.$store.lang] == this.selectCategory
-      );
-   
-      let test = selectedCategory.children.find(child => child.text[this.$store.lang] == this.selectStake);
-      console.log(test)
-      test.children.push(new SourceData(this.tooltip, this.dataText));
+      
+      const newSourceData = new SourceData({ [this.$i18n.locale]: this.dataText }, { [this.$i18n.locale]: this.tooltip }, this.pickedCategory.value, this.pickedStake.value);
+      templateStore.sourceDataTemplate[newSourceData.sourceData_key] = newSourceData;
 
       this.dataText = "";
       this.tooltip = "";
-      this.selectCategory = "";
-      this.persistent = false;
+      this.pickedCategory = "";
+      this.pickedStake = "";
+
     },
 
-
-    saveEdit() {
-      this.categories[this.stockedIndexes[0]].children[
-        this.stockedIndexes[1]
-      ].text = this.dataText;
-      this.categories[this.stockedIndexes[0]].children[
-        this.stockedIndexes[1]
-      ].info = this.tooltip;
-
-      if (this.select !== this.categories[this.stockedIndexes[0]].name) {
-        let selectedItem = this.categories[this.stockedIndexes[0]].children.splice(
-          this.stockedIndexes[1],
-          1
-        )[0];
-
-        this.categories
-          .find((category) => category.name == this.select)
-          .children.push(selectedItem);
-        console.log(this.categories);
-      }
-
-      this.persistent = false;
-    },
-
-
+    // affiche les données dans le formulaire d'édition
     showDataSettings(event) {
+      
+      this.isEdited = event.isEdited;
+      this.isDisabled = false;
+      
+      let currentCategory = this.categories.find((axis) => axis.id === event.axisId);
+      let currentStake = currentCategory.stakes.find((stake) => stake.id === event.stakeId);
+      this.currentKey = event.key;
+
+      this.pickedCategory = {label:currentCategory.label[this.$store.lang], value: currentCategory.id};
+      this.pickedStake = {label: currentStake.label[this.$store.lang], value: currentStake.id};
       this.persistent = event.persistent;
       this.dataText = event.dataText;
       this.tooltip = event.tooltip;
-      this.select = event.select;
-      this.isEdited = event.isEdited;
-      this.currentIndicatorIndex = event.index;
-      this.axisIndex = event.axisIndex;
+    },
+
+    saveEdit() {
+      let currentData = this.sourceDatas[this.currentKey]
+      currentData.text[this.$store.lang] = this.dataText;
+      currentData.info[this.$store.lang] = this.tooltip;
+      currentData.axisId = this.pickedCategory.value;
+      currentData.stakeId = this.pickedStake.value;
+      
+      this.persistent = false;
     },
   },
 
-  // mounted() {
-  //   this.categories.forEach((category) => {
-  //     this.options.push(category.text[this.$i18n.locale]);
-  //   });
-
-
-  // },
+  mounted() {
+    // this.sourceDataTemplate.forEach((category) => {
+    //   this.options.push(category.label[this.$store.lang]);
+    // });
+  //   console.log(this.options)
+  },
   components: {
     AxisSetter,
     TranslateModal
