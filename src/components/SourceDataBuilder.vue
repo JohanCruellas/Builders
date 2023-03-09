@@ -38,7 +38,7 @@ export default defineComponent({
   },
   methods: {
     removeData(key) {
-      delete this.sourceDatas[key];
+      delete templateStore.sourceDataTemplate[key];
     },
     openUpdateModal(dataValue, dataKey) {
       
