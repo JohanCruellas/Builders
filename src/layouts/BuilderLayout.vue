@@ -76,11 +76,11 @@
               <q-item-section>
                 <q-input v-if="prop.node.parentId" lazy-rules
                   :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
-                  v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label"
+                  v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label[this.$store.lang]"
                   dense @click.stop>
                 </q-input>
                 <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
-                  v-model="treeNodes.find((axis) => axis.id === prop.node.id).label" dense @click.stop>
+                  v-model="treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]" dense @click.stop>
                 </q-input>
               </q-item-section>
               <q-item-section side>
@@ -92,10 +92,10 @@
             <q-item>
               <q-item-section v-if="prop.node.parentId" dense>
                 {{ treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id ===
-                prop.node.id).label }}
+                prop.node.id).label[this.$store.lang] }}
               </q-item-section>
               <q-item-section v-else lazy-rules dense>
-                {{treeNodes.find((axis) => axis.id === prop.node.id).label}}
+                {{treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]}}
               </q-item-section>
             </q-item>
           </template>
@@ -195,7 +195,7 @@ export default defineComponent({
     deleteNode(node) {
       console.log(node)
       // console.log(this.treeNodes.splice(this.treeNodes.indexOf(node), 1))
-      
+
       if (node.parentId) {
         let nodeAxis = this.treeNodes.find((axis) => { return axis.id == node.parentId; });
         console.log(node)
@@ -278,5 +278,5 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.editIcon {}
+/* .editIcon {} */
 </style>
