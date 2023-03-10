@@ -3,7 +3,7 @@ export default {
   saveBtn: "Save",
   modifyBtn: "Modify",
   closeBtn: "Close",
-  sourceDataCategorySelect: "Select a category",
+  sourceDataCategorySelect: "Select an axis",
   sourceDataStakeSelect: "Select a stake",
 
   ratio: "Ratio",
@@ -22,6 +22,8 @@ export default {
   indicatorAddTitle: "Add an indicator",
   indicatorNameInput: "Indicator name",
   indicatorTooltipInput: "Indicator tooltip",
+  indicatorCategoryInput: "Indicator axis",
+  indicatorStakeInput: "Indicator stake",
   indicatorTypeInput: "Indicator type",
   indicatorFormulaInput: "Indicator formula",
   percent: "Percent",

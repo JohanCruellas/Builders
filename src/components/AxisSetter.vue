@@ -16,6 +16,8 @@
                 <SourceDataBuilder v-if="currentRoute === 'DataSourceBuilder'" @current-datas-settings="parentEmit"
                     :stake-data="stake">
                 </SourceDataBuilder>
+                <IndicatorBuilder v-if="currentRoute === 'IndicatorBuilder'" @current-indicator-settings="parentEmit" :stake-data="stake">
+                </IndicatorBuilder>
             </q-expansion-item>
         </q-card>
     </q-card>
@@ -29,6 +31,7 @@ import { useTemplateStore } from "src/stores/templateStore";
 import { defineComponent } from "vue";
 import QuestionBuilder from './QuestionBuilder.vue';
 import SourceDataBuilder from './SourceDataBuilder.vue';
+import IndicatorBuilder from './IndicatorBuilder.vue';
 
 const templateStore = useTemplateStore()
 // const { questionsTemplate } = storeToRefs(templateStore)
@@ -54,7 +57,7 @@ export default defineComponent({
             //  rénitialisation à zéro pour éviter d'afficher les données si ajout de données après modification de données
 
             this.dataText = "";
-            this.tooltip = "";
+            this.dataTooltip = "";
             this.selectCategory = "";
         },
     },
@@ -64,7 +67,7 @@ export default defineComponent({
             JSONData: ""
         };
     },
-    emits: ['currentDatasSettings'],
+    emits: ['currentDatasSettings', 'currentIndicatorSettings'],
     computed: {
         selectedAxis() {
             return this.selectedNodes
@@ -78,7 +81,8 @@ export default defineComponent({
     },
     components: {
         QuestionBuilder,
-        SourceDataBuilder
+        SourceDataBuilder,
+        IndicatorBuilder
     },
 
 })

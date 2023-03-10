@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-evenly indicatorBuilderPage" style="width: 100vw">
-    <q-card v-if="isShown" class="addIndicatorModal">
+  <div class="flex justify-evenly indicatorBuilderPage">
+    <!-- <q-card v-if="isShown" class="addIndicatorModal">
       <SourceDataSelector @selectedData="updateFormula"></SourceDataSelector>
 
       <q-card-section>
@@ -51,48 +51,51 @@
       <q-card-actions class="justify-end">
         <q-btn flat :label="$t('closeBtn')" float-right @click="this.isShown = false" />
       </q-card-actions>
-    </q-card>
+    </q-card> -->
 
-    <q-card class="indicatorBuilderWrapper">
-      <label class="title q-my-md">{{ $t("indicatorListTitle") }}</label>
-      <q-scroll-area class="indicatorScroll">
-        <q-input :label="$t('indicatorInput')" v-model="indicatorInput" filled></q-input>
-        <q-list class="indicatorList">
-          <q-item v-for="(indicator, indicatorIndex) in filteredIndicators" :key="indicatorIndex">
-            <q-item-section class="q-mr-md">{{
-              $getTrad(indicator.text, $i18n.locale)
-            }}</q-item-section>
-            <q-item-section avatar>
-              <q-icon name="settings" class="cursor-pointer" @click="openModifyIndicatorModal(indicatorIndex)"></q-icon>
-            </q-item-section>
-            <q-item-section avatar>
-              <q-icon name="close" class="cursor-pointer" @click="removeIndicator(indicatorIndex)"></q-icon>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-      <q-btn :label="$t('indicatorAddButton')" color="primary" @click="openAddIndicatorModal" class="q-mt-lg"></q-btn>
-    </q-card>
+    <!-- <q-card class="indicatorBuilderWrapper"> -->
+
+    <!-- <q-scroll-area class="indicatorScroll">
+        <q-input :label="$t('indicatorInput')" v-model="indicatorInput" filled></q-input> -->
+    <q-list class="indicatorList">
+      <q-item v-for="([indicatorKey, indicatorValue], indicatorIndex) in Object.entries(filteredIndicators)"
+        :key="indicatorIndex">
+        <q-item-section class="q-mr-md">{{
+          $getTrad(indicatorValue.text, $i18n.locale)
+        }}</q-item-section>
+        <q-item-section avatar>
+          <q-icon name="settings" class="cursor-pointer"
+            @click="openModifyIndicatorModal(indicatorValue, indicatorKey)"></q-icon>
+        </q-item-section>
+        <q-item-section avatar>
+          <q-icon name="close" class="cursor-pointer" @click="removeIndicator(indicatorKey)"></q-icon>
+        </q-item-section>
+      </q-item>
+    </q-list>
+    <!-- </q-scroll-area> -->
+    <!-- <q-btn :label="$t('indicatorAddButton')" color="primary" @click="openAddIndicatorModal" class="q-mt-lg"></q-btn> -->
+    <!-- </q-card> -->
   </div>
 
-  <TranslateModal></TranslateModal>
+  <!-- <TranslateModal></TranslateModal> -->
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
-import SourceDataSelector from "./SourceDataSelector.vue";
-import TranslateModal from "src/components/TranslateModal.vue";
+// import SourceDataSelector from "./SourceDataSelector.vue";
+// import TranslateModal from "src/components/TranslateModal.vue";
 
 const templateStore = useTemplateStore();
 
 export default defineComponent({
   name: "IndicatorBuilder",
+  props: ['stakeData'],
   data() {
     return {
       categories: templateStore.sourceDataTemplate.categories,
-      indicators: templateStore.indicatorsTemplate.indicators,
-      isEdited: false,
+      indicators: templateStore.indicatorsTemplate,
+      // isEdited: false,
       formula: [],
       dataOptions: [],
       indicatorInput: "",
@@ -108,10 +111,10 @@ export default defineComponent({
       ],
 
       indicatorIndex: "",
-      isShown: false,
-      isModified: false,
+      // isShown: false,
+      // isModified: false,
       lang: "",
-      currentIndicatorIndex: "",
+      // currentIndicatorIndex: "",
       // tab: "",
       left: false,
       modal: false,
@@ -120,65 +123,68 @@ export default defineComponent({
   },
   methods: {
     // ajoute un nouvel indicateur
-    addIndicator() {
-      this.indicators.push({
-        indicator_key: "",
-        text: { [this.$i18n.locale]: this.indicatorName },
-        info: { [this.$i18n.locale]: this.indicatorTooltip },
-        type: { [this.$i18n.locale]: this.indicatorType },
-        formula: this.formula,
-        data_keys: Object.values(this.indicatorDataKeys),
-      });
+    // addIndicator() {
+    //   this.indicators.push({
+    //     indicator_key: "",
+    //     text: { [this.$i18n.locale]: this.indicatorName },
+    //     info: { [this.$i18n.locale]: this.indicatorTooltip },
+    //     type: { [this.$i18n.locale]: this.indicatorType },
+    //     formula: this.formula,
+    //     data_keys: Object.values(this.indicatorDataKeys),
+    //   });
 
-      this.indicatorName = "";
-      this.indicatorTooltip = "";
-      this.indicatorType = "";
-      this.formula = "";
+    //   this.indicatorName = "";
+    //   this.indicatorTooltip = "";
+    //   this.indicatorType = "";
+    //   this.formula = "";
+    // },
+
+    // openAddIndicatorModal() {
+    //   this.persistent = true;
+    //   this.isEdited = false;
+    //   this.isShown = true;
+
+    //   this.indicatorName = "";
+    //   this.indicatorTooltip = "";
+    //   this.indicatorType = "";
+    //   this.formula = "";
+    // },
+
+    removeIndicator(key) {
+      delete templateStore.indicatorsTemplate[key];
     },
 
-    openAddIndicatorModal() {
-      this.persistent = true;
-      this.isEdited = false;
-      this.isShown = true;
-
-      this.indicatorName = "";
-      this.indicatorTooltip = "";
-      this.indicatorType = "";
-      this.formula = "";
+    openModifyIndicatorModal(indicatorValue, indicatorKey) {
+      // this.isShown = true;
+      // this.isModified = true;
+      let currentIndicatorSettings = {
+        persistent: true,
+        isEdited: true,
+        indicatorText: indicatorValue.text[this.$i18n.locale],
+        indicatorTooltip: indicatorValue.tooltip[this.$i18n.locale],
+        indicatorType: indicatorValue.type[this.$i18n.locale],
+        formula: indicatorValue.formula,
+        key: indicatorKey,
+        axisId: indicatorValue.axisId,
+        stakeId: indicatorValue.stakeId,
+      }
+      this.$emit("currentIndicatorSettings", currentIndicatorSettings);
     },
 
-    removeIndicator(index) {
-      this.indicators.splice(index, 1);
-    },
+    // modifyIndicator(index) {
+    //   this.indicators[index].text[this.$i18n.locale] = this.indicatorName;
+    //   this.indicators[index].info[this.$i18n.locale] = this.indicatorTooltip;
+    //   this.indicators[index].type[this.$i18n.locale] = this.indicatorType;
+    //   this.indicators[index].formula = this.formula;
 
-    openModifyIndicatorModal(index) {
-      this.isShown = true;
-      this.isModified = true;
-      this.indicatorIndex = index;
+    //   this.isModified = false;
+    //   this.isShown = false;
+    // },
 
-      this.currentIndicatorIndex = index;
-
-      this.indicatorName = this.indicators[index].text[this.$i18n.locale];
-      this.indicatorTooltip = this.indicators[index].info[this.$i18n.locale];
-      this.indicatorType = this.indicators[index].type[this.$i18n.locale];
-
-      this.formula = this.indicators[index].formula;
-    },
-
-    modifyIndicator(index) {
-      this.indicators[index].text[this.$i18n.locale] = this.indicatorName;
-      this.indicators[index].info[this.$i18n.locale] = this.indicatorTooltip;
-      this.indicators[index].type[this.$i18n.locale] = this.indicatorType;
-      this.indicators[index].formula = this.formula;
-
-      this.isModified = false;
-      this.isShown = false;
-    },
-
-    updateFormula(event) {
-      let newFormulaArray = this.formula.concat(Array.from(event));
-      this.formula = newFormulaArray;
-    },
+    // updateFormula(event) {
+    //   let newFormulaArray = this.formula.concat(Array.from(event));
+    //   this.formula = newFormulaArray;
+    // },
   },
   computed: {
     // computed qui gère les cas si l'utilisateur filtre par catégorie et/ou tapant une string pour chercher une donnée en particulier
@@ -207,9 +213,18 @@ export default defineComponent({
       if (this.indicatorInput === "") {
         return this.indicators;
       } else {
-        let filteredIndicators = this.indicators.filter((element) =>
-          element.text.toLowerCase().includes(this.indicatorInput.toLowerCase())
-        );
+        // TODO: adapter cette computed
+        let filteredIndicators = {};
+        console.log(this.indicators);
+        Object.entries(this.indicators).forEach(([key, object]) => {
+          if (object.stakeId === this.stakeData.id) {
+            object.text.toLowerCase().includes(this.indicatorInput.toLowerCase())
+          }
+        })
+
+        // this.indicators.filter((element) =>
+        //   element.text.toLowerCase().includes(this.indicatorInput.toLowerCase())
+        // );
         return filteredIndicators;
       }
     },
@@ -220,23 +235,23 @@ export default defineComponent({
     },
   },
   components: {
-    SourceDataSelector,
-    TranslateModal,
+    // SourceDataSelector,
+    // TranslateModal,
   },
 });
 </script>
 
 <style lang="scss" scoped>
-.indicatorBuilderPage {
-  align-items: center;
-}
+// .indicatorBuilderPage {
+//   align-items: center;
+// }
 
 .form,
 .indicatorList {
   display: flex;
   flex-direction: column;
-  row-gap: 2em;
-  padding: 1em;
+  // row-gap: 2em;
+  // padding: 1em;
   background-color: white;
 }
 
@@ -245,8 +260,8 @@ export default defineComponent({
 }
 
 .indicatorList {
-  width: 90%;
-  margin: 2em auto;
+  width: 100%;
+  // margin: 2em auto;
 }
 
 // .title {

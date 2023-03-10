@@ -27,7 +27,7 @@ export default boot(({ app }) => {
     
     app.config.globalProperties.$store.modal = true;
     app.config.globalProperties.$store.key = object.key;
-    app.config.globalProperties.$store.info = object.info;
+    app.config.globalProperties.$store.tooltip = object.tooltip;
     app.config.globalProperties.$store.type = object.type;
     app.config.globalProperties.$store.input = object.input;
   }

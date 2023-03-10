@@ -1,4 +1,6 @@
 <template>
+<!-- VOIR SI AJOUT DE BARRE DE RECHERCHE -->
+
   <q-list>
     <q-item v-for="([dataKey, dataValue], dataIndex) in Object.entries(sourceDatas)" :key="dataIndex" style="width:100%">
       <q-item-section class="q-mr-md ">{{ $getTrad(dataValue.text, $i18n.locale) }}</q-item-section>
@@ -49,7 +51,7 @@ export default defineComponent({
         dataText: dataValue.text[this.$i18n.locale],
         axisId: dataValue.axisId,
         stakeId: dataValue.stakeId,
-        tooltip: dataValue.info[this.$i18n.locale],
+        dataTooltip: dataValue.tooltip[this.$i18n.locale],
         key: dataKey,
       };
       this.$emit("currentDatasSettings", currentDatasSettings);

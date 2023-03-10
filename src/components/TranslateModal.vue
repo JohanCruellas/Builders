@@ -47,20 +47,16 @@ export default defineComponent({
           break;
         case 'sourceData':
           this.store = templateStore.sourceDataTemplate[this.$store.key];
-          console.log(this.store)
           break;
       }
 
-      console.log(this.$store)
-
       switch (this.$store.input) {
         case 'text':
-          console.log(this.store)
           this.translations = this.store.text;
           break;
         case 'tooltip':
           console.log(this.store)
-          this.translations = this.store.info;
+          this.translations = this.store.tooltip;
          
           break;
         case 'select':

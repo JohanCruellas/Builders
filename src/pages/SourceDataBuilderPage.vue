@@ -1,9 +1,13 @@
 <template>
+  <q-page class="flex flex-center">
+    <label class="title q-my-md">{{ $t("sourceDataListTitle") }}</label>
   <AxisSetter @new-emit="showDataSettings"></AxisSetter>
   <div style="width: 100%" class="flex flex-center q-ma-md">
     <q-btn :label="$t('sourceDataAddButton')" @click="openAddModal()" class="q-ma-md" />
   </div>
-  <!-- modale qui s'ouvre quand icone du compo SourceDataBuilder est cliquée -->
+  </q-page>
+   
+  <!-- modale qui s'ouvre quand icone settings du compo SourceDataBuilder est cliquée -->
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 100%">
       <q-card-section>
@@ -19,12 +23,12 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input v-model="tooltip" :label="$t('sourceDataTooltipInput')">
+          <q-input v-model="dataTooltip" :label="$t('sourceDataTooltipInput')">
             <template v-slot:after>
               <q-icon v-if="isEdited" name="translate" class="cursor-pointer" @click="
                 this.$openModal({
                   key: this.currentKey,
-                  info: this.tooltip,
+                  tooltip: this.dataTooltip,
                   type: 'sourceData',
                   input: 'tooltip',
                 })
@@ -66,18 +70,16 @@ export default defineComponent({
   data() {
     return {
       categories: templateStore.axisTemplate.categories,
-      // sourceDatas: templateStore.sourceDataTemplate,
       currentCategory: null,
       currentStake: null,
       currentKey: '',
-      // options: [],
       persistent: false,
       dataText: "",
-      tooltip: "",
+      dataTooltip: "",
       pickedCategory: null,
       pickedStake: null,
       isDisabled: true,
-      isEdited: false, // = isModified
+      isEdited: false, 
     };
   },
   computed: {
@@ -121,19 +123,19 @@ export default defineComponent({
       //  rénitialisation à zéro pour éviter d'afficher les données si ajout de données après modification de données
 
       this.dataText = "";
-      this.tooltip = "";
-      this.pickedCategory = "";
-      this.pickedStake = "";
+      this.dataTooltip = "";
+      this.pickedCategory = null;
+      this.pickedStake = null;
     },
 
     // ajoute la donnée 
     addData() {
       
-      const newSourceData = new SourceData({ [this.$i18n.locale]: this.dataText }, { [this.$i18n.locale]: this.tooltip }, this.pickedCategory.value, this.pickedStake.value);
+      const newSourceData = new SourceData({ [this.$i18n.locale]: this.dataText }, { [this.$i18n.locale]: this.dataTooltip }, this.pickedCategory.value, this.pickedStake.value);
       templateStore.sourceDataTemplate[newSourceData.sourceData_key] = newSourceData;
-
+     
       this.dataText = "";
-      this.tooltip = "";
+      this.dataTooltip = "";
       this.pickedCategory = "";
       this.pickedStake = "";
 
@@ -153,20 +155,23 @@ export default defineComponent({
       this.pickedStake = {label: currentStake.label[this.$store.lang], value: currentStake.id};
       this.persistent = event.persistent;
       this.dataText = event.dataText;
-      this.tooltip = event.tooltip;
+      this.dataTooltip = event.dataTooltip;
     },
 
     saveEdit() {
       let currentData = this.sourceDatas[this.currentKey]
       currentData.text[this.$store.lang] = this.dataText;
-      currentData.info[this.$store.lang] = this.tooltip;
+      currentData.tooltip[this.$store.lang] = this.dataTooltip;
       currentData.axisId = this.pickedCategory.value;
       currentData.stakeId = this.pickedStake.value;
       
       this.persistent = false;
     },
-  },
 
+    log() {
+    console.log(templateStore.sourceDataTemplate)
+  }
+  },
   mounted() {
     // this.sourceDataTemplate.forEach((category) => {
     //   this.options.push(category.label[this.$store.lang]);
