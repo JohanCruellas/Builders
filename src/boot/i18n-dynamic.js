@@ -1,7 +1,9 @@
 import { boot } from 'quasar/wrappers'
 import { useGlobalStore } from "../stores/globalStore.js";
 
+
 export default boot(({ app }) => {
+  //A voir si nécessaire
   app.config.globalProperties.$getTrad = (objectText, localLanguage) => {
     const fallback = ["enUS", "frFR"];
     if (typeof objectText === "object") {

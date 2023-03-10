@@ -30,7 +30,7 @@
         >
           <q-item clickable @click="getSelectedDatas(dataIndex)">
             <q-item-section>
-              <q-item-label>{{ $getTrad(data.label, $i18n.locale) }}</q-item-label>
+              <q-item-label>{{ $getTrad(data.label[$i18n.locale], $i18n.locale) }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

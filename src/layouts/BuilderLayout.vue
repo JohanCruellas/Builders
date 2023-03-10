@@ -65,19 +65,21 @@
     <q-drawer show-if-above v-model="left" side="left" bordered>
       <q-item class="row">
         <q-space />
-        <q-icon name="edit_note" size="sm" color="grey" class="cursor-pointer editIcon" @click.stop
-          @click="editOn = !editOn"></q-icon>
+        <q-icon v-if="editOn === false" name="edit_note" size="sm" color="grey" class="cursor-pointer editIcon"
+          @click.stop @click="editOn = !editOn"></q-icon>
+        <q-icon v-if="editOn === true" name="save" size="sm" color="grey" class="cursor-pointer editIcon" @click.stop
+          @click="saveToTemplate()"></q-icon>
       </q-item>
       <q-item>
         <q-tree :nodes="treeNodesComputed" node-key="id" :no-nodes-label="$t('noAxis')" v-model:ticked="selectedNodes"
           :tick-strategy="tickStrategy" dense>
           <template v-slot:default-header="prop" v-if="editOn === true">
             <q-item>
-              <q-item-section>
+              <q-item-section @keypress.space.stop>
                 <q-input v-if="prop.node.parentId" lazy-rules
                   :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
                   v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label[this.$store.lang]"
-                  dense @click.stop>
+                  dense @click.stop @click="log(prop.node)">
                 </q-input>
                 <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
                   v-model="treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]" dense @click.stop>
@@ -106,7 +108,6 @@
       </q-item>
       <q-item>
         <q-btn @click="addAxis()" v-if="editOn === true">{{ $t("axisAddBtn") }}</q-btn>
-        <q-btn @click="saveToTemplate()" v-if="editOn === true">Save</q-btn>
       </q-item>
 
     </q-drawer>
@@ -120,7 +121,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
-import { Axis } from "src/classes/Axis.js";
+import { Axis } from "src/classes/axis.js";
 import { Stake } from "src/classes/stake.js";
 import { AxisTemplateSave } from "src/helpers/TemplateHelper.js"
 
@@ -173,9 +174,8 @@ export default defineComponent({
     }
   },
   methods: {
-    log(event) {
-      console.log(this.treeNodesComputed)
-      console.log(this.treeNodes)
+    log(txt) {
+      console.log(txt)
     },
     getParentNode(node) {
       return this.treeNodes.find((axis) => {
@@ -193,15 +193,18 @@ export default defineComponent({
       this.treeNodes.push(new Axis());
     },
     deleteNode(node) {
+
+      //TODO: Delete node from treeNodes
+
       console.log(node)
       // console.log(this.treeNodes.splice(this.treeNodes.indexOf(node), 1))
-
+      // console.log(nodeIndex)
       if (node.parentId) {
         let nodeAxis = this.treeNodes.find((axis) => { return axis.id == node.parentId; });
-        console.log(node)
-        console.log(nodeAxis.stakes)
-        console.log(nodeAxis.stakes.indexOf(node))
-        // nodeAxis.stakes.splice(nodeAxis.stakes.indexOf(node), 1);
+        let childToDelete = nodeAxis.stakes.find((stake) => { return stake.id == node.id; });
+        let childToDeleteIndex = nodeAxis.stakes.indexOf(childToDelete);
+        console.log(childToDeleteIndex)
+        nodeAxis.stakes.splice(childToDeleteIndex, 1);
         // console.log(nodeAxis)
       }
       else {
@@ -237,6 +240,7 @@ export default defineComponent({
     },
     saveToTemplate() {
       templateStore.axisTemplate.categories = this.treeNodes;
+      this.editOn = false;
       // AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
     },
   },
