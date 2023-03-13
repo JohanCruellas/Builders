@@ -174,7 +174,7 @@ export default defineComponent({
       this.isModified = false;
       this.isShown = false;
     },
-
+    
     updateFormula(event) {
       let newFormulaArray = this.formula.concat(Array.from(event));
       this.formula = newFormulaArray;

@@ -108,12 +108,13 @@
       </q-item>
       <q-item>
         <q-btn @click="addAxis()" v-if="editOn === true">{{ $t("axisAddBtn") }}</q-btn>
+        <q-btn @click="log()">log</q-btn>
       </q-item>
 
     </q-drawer>
 
     <q-page-container class="q-my-md">
-      <router-view :selected-nodes="this.selectedNodes"></router-view>
+      <router-view></router-view>
     </q-page-container>
   </q-layout>
 </template>
@@ -133,16 +134,24 @@ export default defineComponent({
     return {
       editOn: false,
       left: false,
-      selectedNodes: [],
+      // selectedNodes: templateStore.selectedNodes,
       treeNodes: []
     };
   },
   computed: {
+    selectedNodes: {
+      get() {
+        return templateStore.selectedNodes;
+      },
+      set(value) {
+        templateStore.selectedNodes = value;
+      }
+    },
     currentRoute() {
       return this.$route;
     },
     treeNodesComputed() {
-      //Deepclone
+      //Deepclone todo OPTI
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
       // console.log(computedTree)
       if (this.editOn === true) {
@@ -174,8 +183,8 @@ export default defineComponent({
     }
   },
   methods: {
-    log(txt) {
-      console.log(txt)
+    log() {
+      console.log(this.selectedNodes)
     },
     getParentNode(node) {
       return this.treeNodes.find((axis) => {
@@ -193,34 +202,16 @@ export default defineComponent({
       this.treeNodes.push(new Axis());
     },
     deleteNode(node) {
-
       //TODO: Delete node from treeNodes
-
-      console.log(node)
-      // console.log(this.treeNodes.splice(this.treeNodes.indexOf(node), 1))
-      // console.log(nodeIndex)
       if (node.parentId) {
         let nodeAxis = this.treeNodes.find((axis) => { return axis.id == node.parentId; });
         let childToDelete = nodeAxis.stakes.find((stake) => { return stake.id == node.id; });
         let childToDeleteIndex = nodeAxis.stakes.indexOf(childToDelete);
-        console.log(childToDeleteIndex)
         nodeAxis.stakes.splice(childToDeleteIndex, 1);
-        // console.log(nodeAxis)
       }
       else {
         this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
       }
-      // console.log(this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node))
-      // if (node.parentId) {
-      //   this.treeNodes.find((axis) => {
-      //     return axis.id === node.parentId;
-      //   }).stakes.splice(
-      //     this.treeNodes.find((axis) => {return axis.id === node.parentId;}).stakes.indexOf(node),
-      //     1);
-      // } else {
-      //   this.treeNodes.splice(this.treeNodes.indexOf(node), 1);
-      // }
-
     },
     goToAccount(route) {
       switch (route) {

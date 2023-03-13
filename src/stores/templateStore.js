@@ -75,7 +75,8 @@ export const useTemplateStore = defineStore("templateStore", {
               }],
           }
         ]
-      }
+      },
+      selectedNodes: []
     };
   },
 });
