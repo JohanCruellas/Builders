@@ -8,44 +8,14 @@
         <q-item-section>{{ sidePanelPath }}</q-item-section>
       </q-item>
       <q-separator />
-      <!-- drawer content -->
-      <!-- <q-list>
-                <q-item-label header>Indicators</q-item-label>
-                <q-item v-for="(indicator, indicatorIndex) in indicators" :key="indicatorIndex">
-                    <q-item-section>
-                        <q-item-label>{{ indicator.text }}</q-item-label>
-                        <q-item-label caption> {{ indicator.formula }}</q-item-label>
-                    </q-item-section> -->
-      <!-- <q-item-section side top>
-                        <q-item-label caption>5 min ago</q-item-label>
-                    </q-item-section> -->
-      <!-- </q-item>
-                <q-separator spaced />
-                <q-item-label header>Source Data</q-item-label>
-                <q-item v-for="(data, dataIndex) in sourceDatas" :key="dataIndex">
-                    <q-item-section>
-                        <q-item-label>{{ data.text }}</q-item-label>
-                    </q-item-section>
-                </q-item>
-
-            </q-list> -->
-      <!-- <q-btn @click="log">log</q-btn> -->
       <div v-if="sidePanelHome">
-        <q-item
-          clickable
-          v-ripple
-          @click="openSidePanelList(indicators, 'indicator')"
-        >
+        <q-item clickable v-ripple @click="openSidePanelList(indicators, 'indicator')">
           <q-item-section> Indicators </q-item-section>
           <q-item-section avatar>
             <q-icon name="chevron_right" />
           </q-item-section>
         </q-item>
-        <q-item
-          clickable
-          v-ripple
-          @click="openSidePanelList(sourceDatas, 'sourceData')"
-        >
+        <q-item clickable v-ripple @click="openSidePanelList(sourceDatas, 'sourceData')">
           <q-item-section> Source Data </q-item-section>
           <q-item-section avatar>
             <q-icon name="chevron_right" />
@@ -53,29 +23,25 @@
         </q-item>
       </div>
       <div v-else>
-        <q-item
-          clickable
-          v-for="(data, dataIndex) in selectedDatas"
-          :key="dataIndex"
-          v-ripple
-          @click="addToText(data)"
-        >
+        <q-item clickable v-for="(data, dataIndex) in selectedDatas" :key="dataIndex" v-ripple @click="addToText(data)">
           <q-item-section>
             {{ data.text }}
             <q-item-label caption v-if="data.formula">
-              {{ data.formula }}</q-item-label
-            >
+              {{ data.formula }}</q-item-label>
           </q-item-section>
         </q-item>
       </div>
     </q-drawer>
 
     <q-page-container>
-      <q-editor ref="editorPanel" v-model="editor" class="editor" />
-      <q-card flat bordered>
+      <!-- <q-editor ref="editorPanel" v-model="editor" class="editor" />
         <q-card-section>
           <pre style="white-space: pre-line">{{ editor }}</pre>
         </q-card-section>
+      </q-card> -->
+      <q-card flat bordered class="editorCard">
+        <ejs-documenteditorcontainer class="docEditor" :serviceUrl='serviceUrl' :enableToolbar=true>
+        </ejs-documenteditorcontainer>
       </q-card>
     </q-page-container>
   </q-layout>
@@ -84,6 +50,7 @@
 <script>
 import { defineComponent } from "vue";
 import { useTemplateStore } from "src/stores/templateStore";
+import { DocumentEditorContainerComponent, Toolbar } from '@syncfusion/ej2-vue-documenteditor';
 
 const templateStore = useTemplateStore();
 
@@ -97,8 +64,14 @@ export default defineComponent({
       indicators: templateStore.indicatorsTemplate.indicators,
       sidePanelPath: "",
       sidePanelType: null,
-    };
+      serviceUrl: 'https://ej2services.syncfusion.com/production/web-services/api/documenteditor/',
+      provide: {
+        DocumentEditorContainer: [Toolbar]
+      }
+    }
+
   },
+
   computed: {
     sourceDatas() {
       let allDatas = [];
@@ -170,12 +143,26 @@ export default defineComponent({
       // console.log(caretPosition)
     },
   },
+  components: {
+    'ejs-documenteditorcontainer': DocumentEditorContainerComponent,
+  }
 });
 </script>
 
 <style>
 .iconWrapper {
   padding: 0;
+}
+
+.editorCard {
+  margin: 0 5px 5px 5px;
+  padding: 5px 5px 5px 5px;
+  background-color: #1976d2;
+}
+
+.docEditor {
+  height: 90vh !important;
+  width: 95%;
 }
 
 .editor_token {

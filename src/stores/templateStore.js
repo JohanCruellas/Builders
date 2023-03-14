@@ -33,12 +33,6 @@ export const useTemplateStore = defineStore("templateStore", {
           text: "MockQuestion2",
           options: []
         },
-        "e614be2d-c644-4a70-ac95-d10ebb8cdfzzz": {
-          stakeId: "e614be2d-c644-4a70-ac95-d10ebb8cdfzz",
-          axisId: "e614be2d-c644-4a70-ac95-qshdbjqsdhj",
-          text: "MockQuestionNotInAxis",
-          options: []
-        },
       },
       axisTemplate: {
         categories: [
@@ -76,6 +70,26 @@ export const useTemplateStore = defineStore("templateStore", {
           }
         ]
       },
+      documents: [
+        {
+          "id": "d0128a84-8e36-4db4-af91-981bb85aeb60",
+          "document_key": "d0128a84-8e36-4db4-af91-981bb85aeb60",
+          "name": "Bilan Carbone 01",
+          "template": "<div><h1>Ceci est un bilan carbone : {{d0128a84-8e36-4db4-af91-981bb85aeb61}}</h1></div>"
+        },
+        {
+          "id": "d0128a84-8e36-4db4-af91-981bb85aeb50",
+          "document_key": "d0128a84-8e36-4db4-af91-981bb85aeg55",
+          "name": "Bilan Carbone 02",
+          "template": "<div><h1>Ceci est un bilan carbone : {{d0128a84-8e36-4db4-af91-981bb85aeb61}}</h1></div>"
+        },
+        {
+          "id": "d0128a84-8e36-4db4-af91-981bb85aeb40",
+          "document_key": "d0128a84-8e36-4db4-af91-981bb85aez88",
+          "name": "Bilan Carbone 03",
+          "template": "<div><h1>Ceci est un bilan carbone : {{d0128a84-8e36-4db4-af91-981bb85aeb61}}</h1></div>"
+        }
+      ],
       selectedNodes: []
     };
   },

@@ -174,7 +174,7 @@ export default defineComponent({
       this.isModified = false;
       this.isShown = false;
     },
-    
+
     updateFormula(event) {
       let newFormulaArray = this.formula.concat(Array.from(event));
       this.formula = newFormulaArray;
@@ -182,7 +182,6 @@ export default defineComponent({
   },
   computed: {
     // computed qui gère les cas si l'utilisateur filtre par catégorie et/ou tapant une string pour chercher une donnée en particulier
-
     filteredDatas() {
       if (this.checkedCategories.length === 0) {
         if (this.dataName === "") {

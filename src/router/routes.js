@@ -8,13 +8,14 @@ const routes = [
       {path : 'Indicator', name: "IndicatorBuilder", component: ()=> import('pages/IndicatorBuilderPage.vue')},
       {path : 'DataSource', name: "DataSourceBuilder", component: ()=> import('pages/SourceDataBuilderPage.vue')},
       {path : 'Question', name: "QuestionsBuilder", component: ()=> import('src/pages/QuestionsBuilderPage.vue')},
+      {path : 'Test', name: "Tester", component: ()=> import('src/pages/TestPage.vue')},
     ]
   },
   {
     path:'/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/IndexPage.vue') },
+      {path: '', component: () => import('pages/TestPage.vue') },
     ] 
   },
   {

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-primary text-white" height-hint="98">
+    <q-header class="bg-primary text-white" height-hint="98">
       <q-toolbar class="flex justify-between">
         <q-btn dense flat round icon="menu" @click="left = !left"></q-btn>
         <q-toolbar-title align="center">
@@ -63,54 +63,66 @@
     </q-header>
 
     <q-drawer show-if-above v-model="left" side="left" bordered>
-      <q-item class="row">
-        <q-space />
-        <q-icon v-if="editOn === false" name="edit_note" size="sm" color="grey" class="cursor-pointer editIcon"
-          @click.stop @click="editOn = !editOn"></q-icon>
-        <q-icon v-if="editOn === true" name="save" size="sm" color="grey" class="cursor-pointer editIcon" @click.stop
-          @click="saveToTemplate()"></q-icon>
-      </q-item>
-      <q-item>
-        <q-tree :nodes="treeNodesComputed" node-key="id" :no-nodes-label="$t('noAxis')" v-model:ticked="selectedNodes"
-          :tick-strategy="tickStrategy" dense>
-          <template v-slot:default-header="prop" v-if="editOn === true">
-            <q-item>
-              <q-item-section @keypress.space.stop>
-                <q-input v-if="prop.node.parentId" lazy-rules
-                  :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
-                  v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label[this.$store.lang]"
-                  dense @click.stop @click="log(prop.node)">
-                </q-input>
-                <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
-                  v-model="treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]" dense @click.stop>
-                </q-input>
-              </q-item-section>
-              <q-item-section side>
-                <q-icon name="close" size="xs" class="cursor-pointer" @click.stop @click="deleteNode(prop.node)"></q-icon>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:default-header="prop" v-else>
-            <q-item>
-              <q-item-section v-if="prop.node.parentId" dense>
-                {{ treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id ===
-                prop.node.id).label[this.$store.lang] }}
-              </q-item-section>
-              <q-item-section v-else lazy-rules dense>
-                {{treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]}}
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:header-add="prop">
-            <q-btn v-if="editOn === true" @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
-          </template>
-        </q-tree>
-      </q-item>
-      <q-item>
-        <q-btn @click="addAxis()" v-if="editOn === true">{{ $t("axisAddBtn") }}</q-btn>
-        <q-btn @click="log()">log</q-btn>
-      </q-item>
+      <span v-if="!docTree">
+        <q-item class="row">
+          <q-space />
+          <q-icon v-if="editOn === false" name="edit_note" size="sm" color="grey" class="cursor-pointer editIcon"
+            @click.stop @click="editOn = !editOn"></q-icon>
+          <q-icon v-if="editOn === true" name="save" size="sm" color="grey" class="cursor-pointer editIcon" @click.stop
+            @click="saveToTemplate()"></q-icon>
+        </q-item>
+        <q-item>
+          <q-tree :nodes="treeNodesComputed" node-key="id" :no-nodes-label="$t('noAxis')" v-model:ticked="selectedNodes"
+            :tick-strategy="tickStrategy" dense>
+            <template v-slot:default-header="prop" v-if="editOn === true">
+              <q-item>
+                <q-item-section @keypress.space.stop>
+                  <q-input v-if="prop.node.parentId" lazy-rules
+                    :placeholder="$t('stake') + ' ' + (getParentNode(prop.node).stakes.indexOf(getParentNode(prop.node).stakes.find((stake) => stake.id === prop.node.id)) + 1)"
+                    v-model="treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id === prop.node.id).label[this.$store.lang]"
+                    dense @click.stop @click="log(prop.node)">
+                  </q-input>
+                  <q-input v-else lazy-rules :placeholder="$t('axis') + ' ' + (prop.tree.nodes.indexOf(prop.node) + 1)"
+                    v-model="treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]" dense
+                    @click.stop>
+                  </q-input>
+                </q-item-section>
+                <q-item-section side>
+                  <q-icon name="close" size="xs" class="cursor-pointer" @click.stop
+                    @click="deleteNode(prop.node)"></q-icon>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:default-header="prop" v-else>
+              <q-item>
+                <q-item-section v-if="prop.node.parentId" dense>
+                  {{ treeNodes.find((axis) => axis.id === prop.node.parentId).stakes.find((stake) => stake.id ===
+                  prop.node.id).label[this.$store.lang] }}
+                </q-item-section>
+                <q-item-section v-else lazy-rules dense>
+                  {{treeNodes.find((axis) => axis.id === prop.node.id).label[this.$store.lang]}}
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:header-add="prop">
+              <q-btn v-if="editOn === true" @click="addStake(prop.node)">{{ prop.node.label }}</q-btn>
+            </template>
+          </q-tree>
 
+        </q-item>
+        <q-item>
+          <q-btn @click="addAxis()" v-if="editOn === true">{{ $t("axisAddBtn") }}</q-btn>
+          <q-btn @click="log()">log</q-btn>
+        </q-item>
+      </span>
+      <span>
+        <q-list bordered padding class="rounded-borders text-primary">
+          <q-item clickable v-ripple :active="selectedDocId === document.id" v-for="(document, documentIndex) in documents" @click="selectDocument(document)"
+          :key="documentIndex" active-class="selectedDoc">
+            <q-item-section>{{ document.name }}</q-item-section>
+          </q-item>
+        </q-list>
+      </span>
     </q-drawer>
 
     <q-page-container class="q-my-md">
@@ -134,8 +146,10 @@ export default defineComponent({
     return {
       editOn: false,
       left: false,
+      documents: templateStore.documents,
       // selectedNodes: templateStore.selectedNodes,
-      treeNodes: []
+      treeNodes: [],
+      selectedDocId: null
     };
   },
   computed: {
@@ -147,13 +161,17 @@ export default defineComponent({
         templateStore.selectedNodes = value;
       }
     },
-    currentRoute() {
-      return this.$route;
+    docTree() {
+      if (this.$route.name === "DocBuilder") {
+        return true;
+      }
+      else {
+        return false;
+      }
     },
     treeNodesComputed() {
       //Deepclone todo OPTI
       let computedTree = JSON.parse(JSON.stringify(this.treeNodes));
-      // console.log(computedTree)
       if (this.editOn === true) {
         computedTree.forEach(
           (axis) => {
@@ -234,6 +252,10 @@ export default defineComponent({
       this.editOn = false;
       // AxisTemplateSave([templateStore.questionsTemplate, templateStore.indicatorsTemplate, templateStore.sourceDataTemplate], this.treeNodes);
     },
+    selectDocument(document) {
+      this.selectedDocId = document.id;
+      // console.log(this.selectedDocId)
+    },
   },
   mounted() {
     this.treeNodes = JSON.parse(JSON.stringify(templateStore.axisTemplate.categories));
@@ -273,5 +295,9 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.selectedDoc {
+  color: white;
+  background-color: #1976d2;
+}
 /* .editIcon {} */
 </style>

@@ -4,6 +4,7 @@
     <q-btn @click="goRoute('Question')">Question Builder</q-btn>
     <q-btn @click="goRoute('Indicator')">Indicator Builder</q-btn>
     <q-btn @click="goRoute('Document')">Document Builder</q-btn>
+    <q-btn @click="goRoute('Test')">Tester</q-btn>
   </q-page>
 </template>
 
@@ -43,6 +44,9 @@ export default defineComponent({
           break;
         case 'Document':
           this.$router.push("builders/Document")
+          break;
+        case 'Test':
+          this.$router.push("builders/Test")
           break;
       }
     }
